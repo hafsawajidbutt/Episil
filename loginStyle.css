@@ -45,15 +45,15 @@ body::before
     font-style: normal;
     font-size: 3.5rem; 
     color: rgb(255, 0, 0);
-    margin-top: 0%;
-    margin-bottom: 0%;
+    margin-top: 1%;
+    margin-bottom: 1%;
 
 }
 .whitebox h2{
     font-size: 2rem; 
     color: rgb(255, 255, 255);
-    margin-top: 0%;
-    margin-bottom: 0%;
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 input {
     padding: 10px;
@@ -62,13 +62,13 @@ input {
     border-radius: 5px;
 }
 #email{
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5%;
+    margin-bottom: 0%;
     position: block;
 }
 #password{
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5%;
+    margin-bottom: 5%;
     position: block;
 }
 button {
