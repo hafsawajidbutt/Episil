@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow} = require('electron')
 const createWindow = () => {
     const win = new BrowserWindow({
       width: 800,
@@ -8,6 +8,6 @@ const createWindow = () => {
     win.loadFile('popupScreen.html')
   }
 
-    app.whenReady().then(() => {
-createWindow()
-})
+  app.whenReady().then(() => {
+    createWindow()
+  })
