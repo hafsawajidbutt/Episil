@@ -1,18 +1,50 @@
 import sqlite3
 import bcrypt
 import configparser
-from abc import ABC, abstractmethod
 import requests
 import os
-
-class database(ABC):
-    pass
-class Userbase(database):
+class Database:
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read('info.ini')
+        config.read('credentials.ini')
         self.salt = config['encryption']['salt']
         self.salt = self.salt.encode()
+        self.url = "https://users-baastheglass.turso.io/v2/pipeline"
+        self.auth_token = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzE5NTQ3OTYsImlkIjoiZTNiMGI2NzItYjVhZC00MmNlLWEzMDAtNTA0ZjY4ZTRhZWM1In0.KX9ntzXmHg84ZPGze4HZsr-qB9ZB8JMD_UJIlwH9nHggtFuqu37WFO8UEYgHARx45RPkFcw61Tf_h5SjnoBvBA"
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS User
+                            (userName TEXT PRIMARY KEY,
+                            password TEXT,
+                            profilePictureLink TEXT,
+                            email TEXT,
+                            downloadLocation TEXT)"""}},
+                {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS UserShow
+                            (userName TEXT,
+                            show TEXT,
+                            PRIMARY KEY(userName, show))"""}},
+                {"type" : "execute", "stmt" : {"sql": """CREATE TABLE IF NOT EXISTS UserHistory
+                                               (userName TEXT,
+                                               show TEXT,
+                                               episodeNum INT,
+                                               PRIMARY KEY(userName, show, episodeNum))"""}},
+                {"type": "close"}
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            print(data)
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
     
     def insertUser(self, userName, passWord, profilePictureLink, email, downloadLocation = " "):
         userName = bcrypt.hashpw(userName.encode(), self.salt)
@@ -22,8 +54,6 @@ class Userbase(database):
             path = "C:/Users/"+ os.getlogin() + "/Downloads"
             if os.path.exists(path):
                 downloadLocation = path
-        url = "https://users-baastheglass.turso.io/v2/pipeline"
-        auth_token = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzE5NTQ3OTYsImlkIjoiZTNiMGI2NzItYjVhZC00MmNlLWEzMDAtNTA0ZjY4ZTRhZWM1In0.KX9ntzXmHg84ZPGze4HZsr-qB9ZB8JMD_UJIlwH9nHggtFuqu37WFO8UEYgHARx45RPkFcw61Tf_h5SjnoBvBA"
         body = {
             "requests": 
                 [
@@ -32,11 +62,11 @@ class Userbase(database):
             ]
         }
         headers = {
-            "Authorization": f"Bearer {auth_token}",
+            "Authorization": f"Bearer {self.auth_token}",
             "Content-Type": "application/json",
         }
         try:
-            response = requests.post(url, headers=headers, json=body)
+            response = requests.post(self.url, headers=headers, json=body)
             response.raise_for_status()  # Raise an exception for non-2xx status codes
 
             data = response.json()
@@ -49,8 +79,6 @@ class Userbase(database):
         print(userName)
         passWord = bcrypt.hashpw(passWord.encode(), self.salt)
         print(passWord)
-        url = "https://users-baastheglass.turso.io/v2/pipeline"
-        auth_token = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzE5NTQ3OTYsImlkIjoiZTNiMGI2NzItYjVhZC00MmNlLWEzMDAtNTA0ZjY4ZTRhZWM1In0.KX9ntzXmHg84ZPGze4HZsr-qB9ZB8JMD_UJIlwH9nHggtFuqu37WFO8UEYgHARx45RPkFcw61Tf_h5SjnoBvBA"
         body = {
             "requests": 
                 [
@@ -59,53 +87,96 @@ class Userbase(database):
             ]
         }
         headers = {
-            "Authorization": f"Bearer {auth_token}",
+            "Authorization": f"Bearer {self.auth_token}",
             "Content-Type": "application/json",
         }
         try:
-            response = requests.post(url, headers=headers, json=body)
+            response = requests.post(self.url, headers=headers, json=body)
             response.raise_for_status()  # Raise an exception for non-2xx status codes
 
             data = response.json()
-            print(type(data))
-            # results_dict = data["results"]
-            # response_dict = results_dict["response"]
-            # result_dict = response_dict["result"]
-            # rows_dict = result_dict["rows"]
             rows = data["results"][0]["response"]["result"]["rows"]
-            #print(len(rows[0][0]))
-            return data["results"][0]["response"]["result"]["rows"]
-            # return data["results"]["response"]["result"]["rows"]
+            if(len(rows) > 0):
+                return True
+            else:
+                return False
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
-        # selUsername = data[0]
-        # selPassword = data[1]
-        # if(selPassword and selUsername):
-        #     print("In true")
-        #     return True
-        # else:
-        #     print("In false")
-        #     return False
-            
-class Localdatabase(database):
-    def __init__(self):
-        self.conn = sqlite3.connect("epnis.db")
-        self.cursor = self.conn.cursor() 
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS History 
-                            userName TEXT,
-                            showName TEXT,
-                            episodeNum INT
-                            PRIMARY KEY (userName, showName, episodeNum)''')
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS UserShow
-                            userName TEXT,
-                            showName TEXT,
-                            PRIMARY KEY(userName, showName)''')
-        config = configparser.ConfigParser()
-        config.read('info.ini')
-        self.salt = config['encryption']['salt']
-        self.salt = self.salt.encode()
+    
+    def insertHistory(self, userName, show, episodeNum):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f""" INSERT INTO UserHistory (userName, show, episodeNum) VALUES ("{userName}", "{show}", {episodeNum}) """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
 
+            data = response.json()
+            return data
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
+    def insertShow(self, userName, show):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f""" INSERT INTO UserShow (userName, show) VALUES ("{userName}", "{show}") """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            return data
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
+    def getUserShows(self, userName):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f"""SELECT show from UserShow where userName = "{userName}" """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            rows = data["results"][0]["response"]["result"]["rows"]
+            if len(rows) == 0:
+                return "User has no shows"
+            else:
+                return rows
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
         
-               
-#d1.insertUser("Hafsa Butt", "buttmaster", "butt", "butt@gmail.com")
-#d1.verifyUser("Hafsa Butt", "buttmaster")
+    
+            
+# base = Database()
+# #base.insertShow("Butt", "Tokyo Ghoul")
+# #base.insertHistory("Butt", "Tokyo Ghoul", 1)     
+# base.insertShow("Butt", "Orbital Children")
+# base.insertHistory("Butt", "Orbital Children", 1)               
