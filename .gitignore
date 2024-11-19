@@ -1,2 +1,4 @@
 node_modules/
 background.jpg
+credentials.ini
+*.db
