@@ -38,3 +38,29 @@ body::before {
     margin: 0;
     color: rgb(255, 0, 0);
 }
+
+#space
+{
+    margin-top: 15%;
+    animation: hover;
+    position: absolute;
+    top: 50%;
+    left: 27.5%;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+@keyframes hover
+{
+    0%
+    {
+        margin-top: 15%;
+    }
+    50%
+    {
+        margin-top: 20%;
+    }
+    100%
+    {
+        margin-top: 15%;
+    }
+}
