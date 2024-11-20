@@ -69,6 +69,42 @@ def getShows():
         return animeNames
     except Exception as e:
         return {"error": str(e)}
-    
+
+@app.route('/getShowHistory', methods = ["GET"])
+def getShowHistory():
+    d1 = Database()
+    userName = request.form.get("userName")
+    show = request.form.get("show")
+    try:
+        rows = d1.getShowHistory(userName, show)
+        episodes = []
+        for row in rows:
+            episodes.append(row[0]['value'])
+        return episodes
+    except Exception as e:
+        return e
+
+@app.route('/getDownloadHistory', methods = ["GET"])
+def getDownloadHistory():
+    d1 = Database()
+    userName = request.form.get("userName")
+    try:
+        rows = d1.getUserHistory(userName)
+        animeNames = []
+        episodeNums = []
+        finalRes = []
+        for row in rows:
+            animeNames.append(row[0]['value'])
+            episodeNums.append(row[1]['value'])
+        print(animeNames)
+        print(episodeNums)
+        for i in range(len(animeNames)):
+            finalRes.append(animeNames[i])
+            finalRes.append(episodeNums[i])
+        return finalRes
+    except Exception as e:
+        return e
+
 if __name__ == "__main__":
+    
     app.run(debug=True)

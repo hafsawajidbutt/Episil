@@ -172,11 +172,65 @@ class Database:
                 return rows
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
+    
+    def getShowHistory(self, userName, show):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f"""SELECT episodeNum from UserHistory where userName = "{userName}" and show = "{show}" """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            rows = data["results"][0]["response"]["result"]["rows"]
+            if len(rows) == 0:
+                return "No episodes have been downloaded for this show"
+            else:
+                return rows
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
+    def getUserHistory(self, userName):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f"""SELECT show, episodeNum from UserHistory where userName = "{userName}" """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            rows = data["results"][0]["response"]["result"]["rows"]
+            if len(rows) == 0:
+                return "No episodes have been downloaded for this show"
+            else:
+                return rows
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+        
         
     
             
 # base = Database()
-# #base.insertShow("Butt", "Tokyo Ghoul")
-# #base.insertHistory("Butt", "Tokyo Ghoul", 1)     
+# base.insertShow("Butt", "Tokyo Ghoul")
+# base.insertHistory("Butt", "Tokyo Ghoul", 1)     
 # base.insertShow("Butt", "Orbital Children")
-# base.insertHistory("Butt", "Orbital Children", 1)               
+# base.insertHistory("Butt", "Orbital Children", 1)
+# base.insertHistory("Butt", "Tokyo Ghoul", 2)              
