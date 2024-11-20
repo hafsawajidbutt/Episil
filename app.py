@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import sqlite3
 from database import Database
 import string
@@ -8,6 +8,10 @@ import bcrypt
 import configparser
 
 app = Flask(__name__)
+
+@app.route('/loginPage', methods = ["GET"])
+def homePage():
+    return flask.render_template("login.html")
 
 @app.route('/addUser', methods = ["POST"])
 def addUser():
@@ -24,17 +28,21 @@ def addUser():
 
 @app.route('/verifyUser', methods = ["POST"])
 def verifyUser():
+    print("In verify user")
     d1 = Database()
     userName = request.form.get("userName")
     passWord = request.form.get("passWord")
     if (d1.verifyUser(userName, passWord)):
-        resp = flask.make_response()
+        response = flask.make_response("Success!")
         letters = string.ascii_letters
         key = ' '.join(random.choice(letters) for i in range(5))
-        resp.set_cookie(key, userName)
-        return resp
+        response.set_cookie(key, userName)
+        #return flask.render_template("homePage.html")
+        return response
     else:
-        return "Invalid Credentials"
+        response = flask.make_response("Failure!")
+        return jsonify({"message": "Dont let them in"})
+        #return flask.render_template("login.html", error_message = "Invalid credentials")
 
 @app.route('/insertHistory', methods = ["POST"])
 def insertHistory():
