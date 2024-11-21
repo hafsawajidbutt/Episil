@@ -6,12 +6,10 @@ import string
 import random
 import bcrypt
 import configparser
+import requests
+from AnilistPython import Anilist
 
 app = Flask(__name__)
-
-@app.route('/loginPage', methods = ["GET"])
-def homePage():
-    return flask.render_template("login.html")
 
 @app.route('/addUser', methods = ["POST"])
 def addUser():
@@ -76,9 +74,18 @@ def getShows():
     try:
         rows = d1.getUserShows(userName)
         animeNames = []
+        bannerPics = []
+        resArr = []
         for row in rows:
             animeNames.append(row[0]['value'])
-        return animeNames
+            #new_anime_name = "%20".join(animeNames[animeNames.index(row[0]['value'])].split())
+            anilist = Anilist()
+            anime_data = anilist.get_anime(row[0]['value'])
+            bannerPics.append(anime_data['cover_image'])
+        for i in range(len(animeNames)):
+            resArr.append(animeNames[i])
+            resArr.append(bannerPics[i])
+        return resArr
     except Exception as e:
         return {"error": str(e)}
 
@@ -118,5 +125,4 @@ def getDownloadHistory():
         return e
 
 if __name__ == "__main__":
-    
     app.run(debug=True)
