@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import sqlite3
 from database import Database
 import string
@@ -8,6 +8,10 @@ import bcrypt
 import configparser
 
 app = Flask(__name__)
+
+@app.route('/loginPage', methods = ["GET"])
+def homePage():
+    return flask.render_template("login.html")
 
 @app.route('/addUser', methods = ["POST"])
 def addUser():
@@ -24,17 +28,23 @@ def addUser():
 
 @app.route('/verifyUser', methods = ["POST"])
 def verifyUser():
+    print("In verify user")
     d1 = Database()
     userName = request.form.get("userName")
     passWord = request.form.get("passWord")
     if (d1.verifyUser(userName, passWord)):
-        resp = flask.make_response()
+        data = {'message': 'Success'}
+        response = flask.make_response(jsonify(data))
         letters = string.ascii_letters
         key = ' '.join(random.choice(letters) for i in range(5))
-        resp.set_cookie(key, userName)
-        return resp
+        response.set_cookie(key, userName)
+        #return flask.render_template("homePage.html")
+        return response
     else:
-        return "Invalid Credentials"
+        data = {'message': 'Failure'}
+        response = flask.make_response(jsonify(data))
+        return response
+        #return flask.render_template("login.html", error_message = "Invalid credentials")
 
 @app.route('/insertHistory', methods = ["POST"])
 def insertHistory():
@@ -69,6 +79,42 @@ def getShows():
         return animeNames
     except Exception as e:
         return {"error": str(e)}
-    
+
+@app.route('/getShowHistory', methods = ["GET"])
+def getShowHistory():
+    d1 = Database()
+    userName = request.form.get("userName")
+    show = request.form.get("show")
+    try:
+        rows = d1.getShowHistory(userName, show)
+        episodes = []
+        for row in rows:
+            episodes.append(row[0]['value'])
+        return episodes
+    except Exception as e:
+        return e
+
+@app.route('/getDownloadHistory', methods = ["GET"])
+def getDownloadHistory():
+    d1 = Database()
+    userName = request.form.get("userName")
+    try:
+        rows = d1.getUserHistory(userName)
+        animeNames = []
+        episodeNums = []
+        finalRes = []
+        for row in rows:
+            animeNames.append(row[0]['value'])
+            episodeNums.append(row[1]['value'])
+        print(animeNames)
+        print(episodeNums)
+        for i in range(len(animeNames)):
+            finalRes.append(animeNames[i])
+            finalRes.append(episodeNums[i])
+        return finalRes
+    except Exception as e:
+        return e
+
 if __name__ == "__main__":
+    
     app.run(debug=True)
