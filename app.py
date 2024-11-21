@@ -33,15 +33,17 @@ def verifyUser():
     userName = request.form.get("userName")
     passWord = request.form.get("passWord")
     if (d1.verifyUser(userName, passWord)):
-        response = flask.make_response("Success!")
+        data = {'message': 'Success'}
+        response = flask.make_response(jsonify(data))
         letters = string.ascii_letters
         key = ' '.join(random.choice(letters) for i in range(5))
         response.set_cookie(key, userName)
         #return flask.render_template("homePage.html")
         return response
     else:
-        response = flask.make_response("Failure!")
-        return jsonify({"message": "Dont let them in"})
+        data = {'message': 'Failure'}
+        response = flask.make_response(jsonify(data))
+        return response
         #return flask.render_template("login.html", error_message = "Invalid credentials")
 
 @app.route('/insertHistory', methods = ["POST"])

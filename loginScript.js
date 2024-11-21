@@ -9,6 +9,16 @@ document.getElementById("loginButton").addEventListener("click", async function(
         method: "POST",
         body: formData});
     const response = await fetch(request)
-    console.log(response.message)
-    console.log(response)
+    data = await response.json()
+    if(data.message === "Success")
+    {
+        console.log("Success")
+        window.location.href = "./homePage.html"
+    }    
+    else if(data.message === "Failure")
+    {
+        console.log("Failure")
+        document.getElementById("error").value = "Invalid credentials"
+    }
+        
 })
