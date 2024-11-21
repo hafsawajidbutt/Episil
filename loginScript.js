@@ -9,7 +9,7 @@ document.getElementById("loginButton").addEventListener("click", async function(
         method: "POST",
         body: formData});
     const response = await fetch(request)
-    data = await response.json()
+    var data = await response.json()
     if(data.message === "Success")
     {
         console.log("Success")
