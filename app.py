@@ -16,13 +16,17 @@ def homePage():
 @app.route('/addUser', methods = ["POST"])
 def addUser():
     d1 = Database()
+    print("In add user")
     userName = request.form.get("userName")
     passWord = request.form.get("passWord")
     email = request.form.get("email")    
     profilePictureLink = request.form.get("profilePictureLink")
     try:
         d1.insertUser(userName, passWord, profilePictureLink, email)
-        return "User added successfully!" 
+        data = data = {'message': 'Success'}
+        print("About to send response")
+        response = flask.make_response(jsonify(data))
+        return response
     except Exception as e:
         return e
 
@@ -38,14 +42,12 @@ def verifyUser():
         letters = string.ascii_letters
         key = ' '.join(random.choice(letters) for i in range(5))
         response.set_cookie(key, userName)
-        #return flask.render_template("homePage.html")
         return response
     else:
         data = {'message': 'Failure'}
         response = flask.make_response(jsonify(data))
         return response
-        #return flask.render_template("login.html", error_message = "Invalid credentials")
-
+     
 @app.route('/insertHistory', methods = ["POST"])
 def insertHistory():
     d1 = Database()
