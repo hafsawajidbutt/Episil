@@ -11,10 +11,6 @@ from AnilistPython import Anilist
 
 app = Flask(__name__)
 
-@app.route('/loginPage', methods = ["GET"])
-def homePage():
-    return flask.render_template("login.html")
-
 @app.route('/addUser', methods = ["POST"])
 def addUser():
     d1 = Database()
@@ -129,5 +125,4 @@ def getDownloadHistory():
         return e
 
 if __name__ == "__main__":
-    
     app.run(debug=True)

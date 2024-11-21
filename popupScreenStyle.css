@@ -41,26 +41,26 @@ body::before {
 
 #space
 {
-    margin-top: 15%;
-    animation: hover;
+    margin-top: 20%;
+    animation: fade;
     position: absolute;
     top: 50%;
     left: 27.5%;
-    animation-duration: 5s;
+    animation-duration: 1.25s;
     animation-iteration-count: infinite;
 }
-@keyframes hover
+@keyframes fade
 {
     0%
     {
-        margin-top: 20%;
+        filter: brightness(50%);
     }
     50%
     {
-        margin-top: 25%;
+        filter: brightness(100%);
     }
     100%
     {
-        margin-top: 20%;
+        filter: brightness(50%)
     }
 }
