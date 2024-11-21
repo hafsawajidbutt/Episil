@@ -53,14 +53,14 @@ body::before {
 {
     0%
     {
-        margin-top: 15%;
+        margin-top: 20%;
     }
     50%
     {
-        margin-top: 20%;
+        margin-top: 25%;
     }
     100%
     {
-        margin-top: 15%;
+        margin-top: 20%;
     }
 }

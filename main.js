@@ -3,7 +3,7 @@ const createWindow = () => {
     const win = new BrowserWindow({
       width: 800,
       height: 600,
-      icon: "icon.jpeg"
+      icon: "favicon.png"
     })
   
     win.loadFile('popupScreen.html')
