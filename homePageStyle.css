@@ -64,13 +64,78 @@ body::before {
     background-color: #000000;
 }
 
+
+ .search-container {
+    position: relative;
+    width: 300px;
+}
+
+#search-bar {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #070707;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+/*
 .search-bar {
     width: 50%;
     padding: 10px;
     border-radius: 5px;
     border-color: rgb(6, 6, 6);
     font-size: 1rem;
+}  */
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}  
+
+.hidden {
+    display: none;
 }
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #f9f9f9;
+}
+
+
+.heart-button {
+    font-size: 1.2rem;
+    color: gray;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+    transition: color 0.2s;
+} 
+
+.heart-button.liked {
+    color: red;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
@@ -106,3 +171,5 @@ body::before {
     font-size: 1rem;
     font-weight: bold;
 }
+
+
