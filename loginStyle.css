@@ -35,8 +35,6 @@ body::before
     text-align: center;
     position: relative; 
     z-index: 2; 
-
-
 }
 .whitebox h1{
 
@@ -87,7 +85,12 @@ p {
     text-align: center;
     margin-top: 20px;
 }
-  
+#error
+{
+    color: #ff0000;
+    position: relative;
+    top: -3%;
+}
 p a{
     color: #ff0000;
 }

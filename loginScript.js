@@ -18,7 +18,9 @@ document.getElementById("loginButton").addEventListener("click", async function(
     else if(data.message === "Failure")
     {
         console.log("Failure")
-        document.getElementById("error").value = "Invalid credentials"
+        document.getElementById("email").value = ""
+        document.getElementById("password").value = ""
+        document.getElementById("error").innerHTML = "Invalid credentials"
     }
         
 })

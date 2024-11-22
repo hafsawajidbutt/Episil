@@ -27,15 +27,16 @@ import sqlite3
 class downloader:
     def __init__(self):
         self.anilist = Anilist()
-        self.driver = uc.Chrome()
-        self.driver2 = uc.Chrome()
-        self.qb = Client('http://127.0.0.1:8080/')
-        self.qb.login('admin', 'hafsapotty')
+        self.driver = None#uc.Chrome()
+        self.driver2 = None#uc.Chrome()
+        self.qb = None#Client('http://127.0.0.1:8080/')
+        #self.qb.login('admin', 'hafsapotty')
         self.conn = sqlite3.connect("epnis.db")
     
     def animepahe(self, link):
+        self.driver = uc.Chrome()
         driver = self.driver
-        driver2 = self.driver2
+        #driver2 = self.driver2
         driver.get(link)
         #driver.get("https://animepahe.ru/play/af8ae120-37b5-8f96-59b4-f40d31af59d3/a4d2ec9c2510ffdf52fd30713f42cfc7cbb4a8b3646eccd28e33decb2f127a62")
         time.sleep(10)
@@ -66,7 +67,8 @@ class downloader:
         end_index = script_content.find(')', start_index)
         href_part = script_content[start_index:end_index]
         href_value = href_part[href_part.find('"') + 1: href_part.rfind('"')]  # Extract href within quotes
-        driver2 = uc.Chrome()
+        self.driver2 = uc.Chrome()
+        driver2 = self.driver2
         driver2.get(href_value)
         time.sleep(5)
         possibleInterceptors = driver2.find_elements(By.TAG_NAME, "a")
@@ -124,7 +126,9 @@ class downloader:
     
     def airedDownload(self, anime_name):
         try:
+            self.qb = Client('http://127.0.0.1:8080/')
             qb = self.qb
+            qb.login('admin', 'hafsapotty')
         except Exception as e:
             if(type(e) == requests.exceptions.ConnectionError):
                 for root, dirs, files in os.walk(r'C:\Program Files'):
@@ -133,7 +137,7 @@ class downloader:
                             path = os.path.abspath(os.path.join(root, name))
                             break
                 subprocess.call([path])
-                return
+                qb.login('admin', 'hafsapotty')
         new_anime_name = "%20".join(anime_name.split())
         try:
             response = requests.get(f"https://nyaaapi.onrender.com/nyaa?q={new_anime_name}", verify=False)
@@ -146,7 +150,7 @@ class downloader:
             qb.download_from_link(torrentLink)
         except Exception as e:
             print("In exception block")
-            print(e)
+            print(e.args)
     
     def download(self, anime_name):
         anilist = self.anilist    
@@ -163,7 +167,7 @@ class downloader:
                 cursor = self.conn.cursor()
                 cursor.execute("INSERT INTO History")
 
-    
-    
+d1 = downloader()
+d1.download("Tokyo Ghoul")
 
     

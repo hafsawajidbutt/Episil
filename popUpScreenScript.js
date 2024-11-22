@@ -5,3 +5,7 @@ document.addEventListener('keydown', function(event)
         window.location.href = "./login.html"  
     }
 })
+// $(document).ready(function() {
+//    // alert("Potty")
+//     $(document).fadeIn(5000); // Fade in over 1 second
+// });
