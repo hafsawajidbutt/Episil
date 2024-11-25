@@ -2,3 +2,6 @@ node_modules/
 background.jpg
 credentials.ini
 *.db
+testing.py
+text.txt
+tempCodeRunnerFile.py

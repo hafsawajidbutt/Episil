@@ -23,15 +23,16 @@ import os
 import datetime
 import subprocess
 import sqlite3
-
+from database import Database
 class downloader:
-    def __init__(self):
+    def __init__(self, userName):
         self.anilist = Anilist()
         self.driver = None#uc.Chrome()
         self.driver2 = None#uc.Chrome()
         self.qb = None#Client('http://127.0.0.1:8080/')
+        self.userName = userName
         #self.qb.login('admin', 'hafsapotty')
-        self.conn = sqlite3.connect("epnis.db")
+        #self.conn = sqlite3.connect("epnis.db")
     
     def animepahe(self, link):
         self.driver = uc.Chrome()
@@ -71,27 +72,44 @@ class downloader:
         driver2 = self.driver2
         driver2.get(href_value)
         time.sleep(5)
-        possibleInterceptors = driver2.find_elements(By.TAG_NAME, "a")
-        for interceptor in possibleInterceptors:
-            print(interceptor.get_attribute("id"))
-            if(len(interceptor.get_attribute("id")) == 5):
-                interceptorID = interceptor.get_attribute("id")
-        driver2.execute_script(f"document.getElementById(\"{interceptorID}\").remove();")
-        time.sleep(2.5)
-        possibleInterceptors = driver2.find_elements(By.TAG_NAME, "div")
-        for interceptor in possibleInterceptors:
-            print(interceptor.get_attribute("id"))
-            if(len(interceptor.get_attribute("id")) == 7):
-                interceptorID = interceptor.get_attribute("id")
-        driver2.execute_script(f"document.getElementById(\"{interceptorID}\").remove();")
-        driver2.find_element(By.XPATH, "(//button[@title='Sorry for the ads, we really need them to pay server bills and to keep the site up!'])[1]").click()
-        time.sleep(5)
+        done = False
+        # forms = driver2.find_element(By.TAG_NAME, "form")
+        # for form in forms:
+        #     print(form.get_attribute("action"))
+        while done == False:
+            try:
+                driver2.find_element(By.XPATH, "(//button[@title='Sorry for the ads, we really need them to pay server bills and to keep the site up!'])[1]").click()
+                time.sleep(5)
+                done = True
+            except:
+                possibleInterceptors = driver2.find_elements(By.TAG_NAME, "div")
+                for interceptor in possibleInterceptors:
+                    print(interceptor.get_attribute("id"))
+                    if(len(interceptor.get_attribute("id")) == 7):
+                        interceptorID = interceptor.get_attribute("id")
+                        driver2.execute_script(f"document.getElementById(\"{interceptorID}\").remove();")
+                        break
+                time.sleep(2.5)
+                possibleInterceptors = driver2.find_elements(By.TAG_NAME, "a")
+                for interceptor in possibleInterceptors:
+                    print(interceptor.get_attribute("id"))
+                    if(len(interceptor.get_attribute("id")) == 5):
+                        interceptorID = interceptor.get_attribute("id")
+                        driver2.execute_script(f"document.getElementById(\"{interceptorID}\").remove();")
+                        break
+                time.sleep(2.5)
+                try:
+                    driver2.find_element(By.XPATH, "(//button[@title='Sorry for the ads, we really need them to pay server bills and to keep the site up!'])[1]").click()
+                    done = True
+                except:
+                    continue
         #use OS to make my own watchdog
         username = getpass.getuser()
         print("Started")
         downloadBegun = False
         downloadEnded = False
         while True:
+            time.sleep(1)
             list_of_files = glob.glob(f"C:\\Users\\{username}\\Downloads\\*") # * means all if need specific format then *.csv
             latest_file = max(list_of_files, key=os.path.getctime)
             print(latest_file[-10::])
@@ -105,7 +123,9 @@ class downloader:
         downloadEnded = False
         print("While loop exited")
         driver2.quit()
+    
     def findingEpisodes(self, name):
+        self.driver = uc.Chrome()
         driver = self.driver
         driver.get("https://animepahe.ru/")
         time.sleep(10)
@@ -152,22 +172,42 @@ class downloader:
             print("In exception block")
             print(e.args)
     
+    def airingDownload(self, anime_name):
+        links = self.findingEpisodes(anime_name)
+        db = Database()
+        for plink in links:
+            index = links.index(plink)
+            record = db.getEpisodeRecord(self.userName, anime_name, index)
+            if(record == 1 and index != 0):    
+                self.animepahe(plink)
+                db.insertHistory(self.userName, anime_name, index + 1)
+            else:
+                oldLink = links[links.index(plink) - 1]
+                self.animepahe(oldLink)
+                db.insertHistory(self.userName, anime_name, index)
+                self.animepahe(plink)
+                db.insertHistory(self.userName, anime_name, index)
+
     def download(self, anime_name):
         anilist = self.anilist    
         anime_data = anilist.get_anime(anime_name)
         print(anime_data)
         if anime_data['airing_status'] == "FINISHED":
             print("Already aired")
-            self.airedDownload(anime_name)
+            try:
+                self.airedDownload(anime_name)
+            except:
+                self.airingDownload(anime_name)
         else:
-            print("Airing")    
-            links = self.findingEpisodes("Tokyo Ghoul")
-            for plink in links:
-                self.animepahe(plink)
-                cursor = self.conn.cursor()
-                cursor.execute("INSERT INTO History")
+            print("Airing")
+            self.airingDownload(anime_name)    
+            # links = self.findingEpisodes("Tokyo Ghoul")
+            # for plink in links:
+            #     self.animepahe(plink)
+            #     cursor = self.conn.cursor()
+            #     cursor.execute("INSERT INTO History")
 
-d1 = downloader()
-d1.download("Tokyo Ghoul")
+d1 = downloader("Baasil")
+d1.airingDownload("Tokyo Ghoul")
 
     

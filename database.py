@@ -199,6 +199,37 @@ class Database:
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
     
+    def getEpisodeRecord(self, userName, show, episodeNum):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f"""SELECT userName, show, episodeNum from UserHistory where userName = "{userName}" and show = "{show}" and episodeNum = {episodeNum}"""}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            rows = data["results"][0]["response"]["result"]["rows_read"]
+            print(rows)
+            #return data
+            return rows
+            #rows = data[""]
+            # rows = data["results"][0]["response"]["result"]["rows"]
+            # if len(rows) == 0:
+            #     return "No episodes have been downloaded for this show"
+            # else:
+            #     return rows
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
     def getUserHistory(self, userName):
         userName = bcrypt.hashpw(userName.encode(), self.salt)
         body = {

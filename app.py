@@ -124,5 +124,22 @@ def getDownloadHistory():
     except Exception as e:
         return e
 
+@app.route('/getEpisodeRecord', methods = ["GET"])
+def getEpisodeRecord():
+    d1 = Database()
+    userName = request.form.get("userName")
+    show = request.form.get("show")
+    episodeNum = request.form.get("episodeNum")
+    try:
+        rows = d1.getEpisodeRecord(userName, show, episodeNum)
+        return str(rows)
+        # episodes = []
+        # for row in rows:
+        #     episodes.append(row[0]['value'])
+        # return episodes
+    except Exception as e:
+        return e
+
+        
 if __name__ == "__main__":
     app.run(debug=True)
