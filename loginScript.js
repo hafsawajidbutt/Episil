@@ -7,6 +7,7 @@ document.getElementById("loginButton").addEventListener("click", async function(
     formData.append('passWord', document.getElementById("password").value);
     const request = new Request("http://127.0.0.1:5000/verifyUser", {
         method: "POST",
+        credentials: "include",
         body: formData});
     const response = await fetch(request)
     var data = await response.json()
@@ -22,5 +23,4 @@ document.getElementById("loginButton").addEventListener("click", async function(
         document.getElementById("password").value = ""
         document.getElementById("error").innerHTML = "Invalid credentials"
     }
-        
 })

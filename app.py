@@ -8,6 +8,8 @@ import bcrypt
 import configparser
 import requests
 from AnilistPython import Anilist
+import datetime
+from downloader import downloader
 
 app = Flask(__name__)
 
@@ -37,9 +39,8 @@ def verifyUser():
     if (d1.verifyUser(userName, passWord)):
         data = {'message': 'Success'}
         response = flask.make_response(jsonify(data))
-        letters = string.ascii_letters
-        key = ' '.join(random.choice(letters) for i in range(5))
-        response.set_cookie(key, userName)
+        print(userName)
+        response.set_cookie('userName', userName, expires = datetime.datetime.now() + datetime.timedelta(days = 30), httponly = False, secure = True)
         return response
     else:
         data = {'message': 'Failure'}
@@ -140,6 +141,33 @@ def getEpisodeRecord():
     except Exception as e:
         return e
 
-        
+@app.route('/getCookie', methods = ["GET"])
+def getCookie():
+    userName = request.cookies.get('userName')
+    print(userName)
+    if(userName):
+        data = {'userName': str(userName)}
+        response = flask.make_response(jsonify(data))
+        return response
+    else:
+        data = {'userName': "No username"}
+        response = flask.make_response(jsonify(data))
+        return response
+
+@app.route('/getDownloadOptions', methods = ["GET"])
+def getDownloadOptions():
+    userName = request.form.get("userName")
+    show = request.form.get("show")
+    d1 = downloader(userName)
+    try:
+        rows = d1.getDownloadOptions(show)
+        return rows
+        # episodes = []
+        # for row in rows:
+        #     episodes.append(row[0]['value'])
+        # return episodes
+    except Exception as e:
+        return e 
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -3,5 +3,10 @@ background.jpg
 credentials.ini
 *.db
 testing.py
+testing2.py
 text.txt
 tempCodeRunnerFile.py
+output.txt
+__pycache__
+cookieGetter.js
+empty.html

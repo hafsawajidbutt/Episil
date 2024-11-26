@@ -24,6 +24,7 @@ import datetime
 import subprocess
 import sqlite3
 from database import Database
+import pyautogui
 class downloader:
     def __init__(self, userName):
         self.anilist = Anilist()
@@ -72,37 +73,11 @@ class downloader:
         driver2 = self.driver2
         driver2.get(href_value)
         time.sleep(5)
-        done = False
-        # forms = driver2.find_element(By.TAG_NAME, "form")
-        # for form in forms:
-        #     print(form.get_attribute("action"))
-        while done == False:
-            try:
-                driver2.find_element(By.XPATH, "(//button[@title='Sorry for the ads, we really need them to pay server bills and to keep the site up!'])[1]").click()
-                time.sleep(5)
-                done = True
-            except:
-                possibleInterceptors = driver2.find_elements(By.TAG_NAME, "div")
-                for interceptor in possibleInterceptors:
-                    print(interceptor.get_attribute("id"))
-                    if(len(interceptor.get_attribute("id")) == 7):
-                        interceptorID = interceptor.get_attribute("id")
-                        driver2.execute_script(f"document.getElementById(\"{interceptorID}\").remove();")
-                        break
-                time.sleep(2.5)
-                possibleInterceptors = driver2.find_elements(By.TAG_NAME, "a")
-                for interceptor in possibleInterceptors:
-                    print(interceptor.get_attribute("id"))
-                    if(len(interceptor.get_attribute("id")) == 5):
-                        interceptorID = interceptor.get_attribute("id")
-                        driver2.execute_script(f"document.getElementById(\"{interceptorID}\").remove();")
-                        break
-                time.sleep(2.5)
-                try:
-                    driver2.find_element(By.XPATH, "(//button[@title='Sorry for the ads, we really need them to pay server bills and to keep the site up!'])[1]").click()
-                    done = True
-                except:
-                    continue
+        pyautogui.moveTo(x=2665, y=667)
+        pyautogui.click()
+        pyautogui.hotkey('ctrl', 'w')
+        time.sleep(2)
+        pyautogui.click()
         #use OS to make my own watchdog
         username = getpass.getuser()
         print("Started")
@@ -142,6 +117,7 @@ class downloader:
         links = []
         for playlink in play_links:
             links.append(playlink.get_attribute('href'))
+        links.reverse()
         return links
     
     def airedDownload(self, anime_name):
@@ -206,8 +182,32 @@ class downloader:
             #     self.animepahe(plink)
             #     cursor = self.conn.cursor()
             #     cursor.execute("INSERT INTO History")
-
-d1 = downloader("Baasil")
-d1.airingDownload("Tokyo Ghoul")
-
     
+    def getDownloadOptions(self, name):
+        self.driver = uc.Chrome()
+        driver = self.driver
+        driver.get("https://animepahe.ru/")
+        time.sleep(10)
+        WebDriverWait(driver, 100).until(EC.presence_of_element_located, (By.CSS_SELECTOR, "input[placeholder='Search']"))
+        time.sleep(5)
+        print("Selector located")
+        time.sleep(5)
+        driver.find_element(By.CSS_SELECTOR, "input[placeholder='Search']").send_keys(name)
+        time.sleep(10)
+        searchResults = driver.find_element(By.CLASS_NAME, "search-results")
+        searchArr = searchResults.text.split('\n')
+        searchArr = ['Tokyo Ghoul', 'TV - 12 Episodes (Finished Airing)', 'Summer 2014', 'Tokyo Ghoul √A', 'TV - 12 Episodes (Finished Airing)', 'Winter 2015', 'Tokyo Ghoul:re', 'TV - 12 Episodes (Finished Airing)', 'Spring 2018', 'Tokyo Ghoul:re 2nd Season', 'TV - 12 Episodes (Finished Airing)', 'Fall 2018', 'Tokyo Ghoul: "Jack"', 'OVA - 1 Episode (Finished Airing)', 'Fall 2015', 'Tokyo Ghoul: "Pinto"', 'OVA - 1 Episode (Finished Airing)', 'Winter 2016', 'A Terrified Teacher at Ghoul School!', 'TV - 24 Episodes (Currently Airing)', 'Fall 2024', 'Tokyo Mew Mew', 'TV - 52 Episodes (Finished Airing)', 'Spring 2002']
+        count = 0
+        for res in searchArr:
+            if(searchArr.index(res) % 3 != 0):
+                searchArr[searchArr.index(res)] = " "       
+                count += 1
+        for i in range(count):
+            searchArr.remove(" ")
+        return searchArr
+        
+if __name__ == "__main__":
+    d1 = downloader("Baasil")
+    #d1.airingDownload("Tokyo Ghoul")
+    d1.getDownloadOptions("Tokyo Ghoul")
+        

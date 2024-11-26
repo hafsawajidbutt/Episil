@@ -1,3 +1,4 @@
+import {getCookie} from './cookieGetter'
 function showDropdown() {
     const searchBar = document.getElementById("search-bar");
     const dropdown = document.getElementById("dropdown");
@@ -41,3 +42,23 @@ function showDropdown() {
         dropdown.classList.add("hidden"); // Hide the dropdown if input is empty
     }
 }
+// document.onload = async function()
+// {
+//     const response = await fetch("http://127.0.0.1:5000/getCookie")
+//     var data = await response.json()
+//     console.log(response)
+//     console.log(data)
+//     console.log("Code has run!")
+// }
+window.addEventListener('load', setTimeout(async function() {
+    // Your code to execute on page load goes here
+    console.log("Page has loaded!")
+    // const response = await fetch("http://127.0.0.1:5000/getCookie", {credentials: "same-origin"})
+    // var data = await response.json()
+    // console.log(response)
+    // console.log(data.userName)
+    // Query all cookies.
+    cookie = getCookie()
+    console.log(cookie)
+    console.log("Potty")
+  }), 2000);
