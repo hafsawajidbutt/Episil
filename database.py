@@ -3,7 +3,16 @@ import bcrypt
 import configparser
 import requests
 import os
-class Database:
+from abc import ABC, abstractmethod
+
+class DB(ABC):
+    @abstractmethod
+    def insertData(self):
+        pass
+    def extractData(self):
+        pass
+    
+class Database(DB):
     def __init__(self):
         config = configparser.ConfigParser()
         config.read('credentials.ini')
@@ -256,12 +265,37 @@ class Database:
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
         
+class localStorage(DB):
+    def __init__(self):
+        self.conn = sqlite3.connect("episil.db")
+        self.cursor = self.conn.cursor()
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS Users(userName TEXT)")
         
     
-            
-# base = Database()
-# base.insertShow("Butt", "Tokyo Ghoul")
-# base.insertHistory("Butt", "Tokyo Ghoul", 1)     
-# base.insertShow("Butt", "Orbital Children")
-# base.insertHistory("Butt", "Orbital Children", 1)
-# base.insertHistory("Butt", "Tokyo Ghoul", 2)              
+    def insertData(self, userName):
+        try:
+            self.cursor.execute("INSERT INTO Users VALUES(?)", (userName,))
+            self.conn.commit()
+            return "Done successfully"
+        except Exception as e:
+            return e
+    def extractData(self):
+        try:
+            self.cursor.execute("SELECT * FROM Users")
+            row = self.cursor.fetchall()
+            return row
+        except Exception as e:
+            print(e)
+    def deleteData(self):
+        try:
+            self.cursor.execute("DELETE FROM Users")
+            self.conn.commit()
+            return "Deleted"
+        except Exception as e:
+            return e
+                
+if __name__ == "__main__":
+    base = localStorage()
+    #print(base.insertData("Baasil"))
+    #print(base.extractData())
+    print(base.deleteData())             
