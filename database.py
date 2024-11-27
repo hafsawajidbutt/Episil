@@ -274,7 +274,7 @@ class localStorage(DB):
     
     def insertData(self, userName):
         try:
-            self.cursor.execute("SELECT * FROM Users WHERE userName = '?'", userName)
+            self.cursor.execute("SELECT * FROM Users WHERE userName = ?", (userName,))
             row = self.cursor.fetchone()
             if(row):
                 return "User already exists"
@@ -288,7 +288,7 @@ class localStorage(DB):
         try:
             self.cursor.execute("SELECT * FROM Users")
             row = self.cursor.fetchall()
-            return row
+            return row[0][0]
         except Exception as e:
             print(e)
     def deleteData(self):
@@ -301,11 +301,13 @@ class localStorage(DB):
                 
 if __name__ == "__main__":
     #base = localStorage()
-    #print(base.insertData("Baasil"))
-    #print(base.extractData())
     base = Database()
-    if(base.verifyUser("Baasil", "booter") == True):
-        print("True")
-    else:
-        print("False")
+    base.insertShow("Baasil", "Tokyo Ghoul")
+    base.insertShow("Baasil", "Orbital Children")
+    #print(base.insertData("Baasil"))
+    # base = Database()
+    # if(base.verifyUser("Baasil", "booter") == True):
+    #     print("True")
+    # else:
+    #     print("False")
     #print(base.deleteData())             
