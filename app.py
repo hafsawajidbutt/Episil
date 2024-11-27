@@ -81,7 +81,6 @@ def getShows():
         resArr = []
         for row in rows:
             animeNames.append(row[0]['value'])
-            #new_anime_name = "%20".join(animeNames[animeNames.index(row[0]['value'])].split())
             anilist = Anilist()
             anime_data = anilist.get_anime(row[0]['value'])
             bannerPics.append(anime_data['cover_image'])
@@ -136,10 +135,6 @@ def getEpisodeRecord():
     try:
         rows = d1.getEpisodeRecord(userName, show, episodeNum)
         return str(rows)
-        # episodes = []
-        # for row in rows:
-        #     episodes.append(row[0]['value'])
-        # return episodes
     except Exception as e:
         return e
 
