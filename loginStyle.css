@@ -1,5 +1,5 @@
-body 
-{
+/* Global Styles */
+body {
     font-family: Arial, sans-serif;
     background-image: url('background.jpg');
     background-size: cover;
@@ -12,8 +12,8 @@ body
     justify-content: center;
     align-items: center;
 }
-body::before 
-{
+
+body::before {
     content: "";
     position: absolute;
     top: 0;
@@ -23,8 +23,8 @@ body::before
     background: rgba(0, 0, 0, 0.75); 
     z-index: 1;
 }
-.whitebox 
-{
+
+.whitebox {
     background-color: rgba(255, 255, 255, 0.146);
     padding: 20px;
     border-radius: 30px;
@@ -36,62 +36,159 @@ body::before
     position: relative; 
     z-index: 2; 
 }
-.whitebox h1{
 
+.whitebox h1 {
     font-family: "Anton", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 3.5rem; 
     color: rgb(255, 0, 0);
-    margin-top: 1%;
-    margin-bottom: 1%;
-
+    margin: 1% 0;
 }
-.whitebox h2{
+
+.whitebox h2 {
     font-size: 2rem; 
     color: rgb(255, 255, 255);
-    margin-top: 1%;
-    margin-bottom: 1%;
+    margin: 1% 0;
 }
+
 input {
     padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
     border-radius: 5px;
 }
-#email{
-    margin-top: 5%;
-    margin-bottom: 0%;
-    position: block;
+
+#email, #password {
+    margin: 5% 0;
 }
-#password{
-    margin-top: 5%;
-    margin-bottom: 5%;
-    position: block;
-}
+
 button {
     background-color: #ff0000;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
     color: #fff;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-}  
-p {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-    margin-top: 20px;
 }
-#error
-{
+
+p {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#error {
     color: #ff0000;
     position: relative;
     top: -3%;
 }
-p a{
+
+p a {
     color: #ff0000;
 }
-  
+
+/* Responsive Styles */
+
+/* Large Desktops */
+@media (min-width: 1281px) {
+    .whitebox {
+        width: 30%;
+        height: 400px;
+    }
+
+    .whitebox h1 {
+        font-size: 3.5rem;
+    }
+
+    .whitebox h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Laptops */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .whitebox {
+        width: 30%;
+        height: 400px;
+    }
+
+    .whitebox h1 {
+        font-size: 3rem;
+    }
+
+    .whitebox h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Tablets (Portrait) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .whitebox {
+        width: 50%;
+        height: 360px;
+    }
+
+    .whitebox h1 {
+        font-size: 2.5rem;
+    }
+
+    .whitebox h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Tablets (Landscape) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .whitebox {
+        width: 50%;
+        height: 350px;
+    }
+
+    .whitebox h1 {
+        font-size: 2.5rem;
+    }
+
+    .whitebox h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Mobiles (Landscape) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .whitebox {
+        width: 60%;
+        height: 320px;
+    }
+
+    .whitebox h1 {
+        font-size: 2rem;
+    }
+
+    .whitebox h2 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Mobiles (Portrait) */
+@media (min-width: 320px) and (max-width: 480px) {
+    .whitebox {
+        width: 80%;
+        height: 300px;
+    }
+
+    .whitebox h1 {
+        font-size: 1.8rem;
+    }
+
+    .whitebox h2 {
+        font-size: 1rem;
+    }
+
+    input {
+        padding: 8px;
+    }
+
+    button {
+        padding: 8px 15px;
+    }
+}
