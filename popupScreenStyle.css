@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     background-image: url('background.jpg');
@@ -25,42 +26,110 @@ body::before {
 
 .overlay {
     position: relative;
-    z-index: 2; 
+    z-index: 2;
     text-align: center;
-    position: inline;
 }
 
 .overlay h1 {
     font-family: "Anton", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 3.5rem; 
+    font-size: 3.5rem;
     margin: 0;
     color: rgb(255, 0, 0);
 }
 
-#space
-{
+#space {
     margin-top: 20%;
-    animation: fade;
+    animation: fade 1.25s infinite;
     position: absolute;
     top: 50%;
     left: 27.5%;
-    animation-duration: 1.25s;
-    animation-iteration-count: infinite;
 }
-@keyframes fade
-{
-    0%
-    {
+
+@keyframes fade {
+    0% {
         filter: brightness(50%);
     }
-    50%
-    {
+    50% {
         filter: brightness(100%);
     }
-    100%
-    {
-        filter: brightness(50%)
+    100% {
+        filter: brightness(50%);
+    }
+}
+
+/* Responsive Styles */
+
+/* Large Desktops */
+@media (min-width: 1281px) {
+    .overlay h1 {
+        font-size: 3.5rem;
+    }
+
+    #space {
+        margin-top: 20%;
+        top: 50%;
+        left: 27.5%;
+    }
+}
+
+/* Laptops */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .overlay h1 {
+        font-size: 3rem;
+    }
+
+    #space {
+        top: 48%;
+        left: 25%;
+    }
+}
+
+/* Tablets (Portrait) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .overlay h1 {
+        font-size: 2.5rem;
+    }
+
+    #space {
+        top: 45%;
+        left: 20%;
+    }
+}
+
+/* Tablets (Landscape) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .overlay h1 {
+        font-size: 2.5rem;
+    }
+
+    #space {
+        top: 47%;
+        left: 22%;
+    }
+}
+
+/* Mobiles (Landscape) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .overlay h1 {
+        font-size: 2rem;
+    }
+
+    #space {
+        top: 40%;
+        left: 15%;
+    }
+}
+
+/* Mobiles (Portrait) */
+@media (min-width: 320px) and (max-width: 480px) {
+    .overlay h1 {
+        font-size: 1.8rem;
+    }
+
+    #space {
+        top: 35%;
+        left: 10%;
     }
 }
