@@ -12,7 +12,7 @@ class DB(ABC):
     def extractData(self):
         pass
     
-class Database(DB):
+class Database():
     def __init__(self):
         config = configparser.ConfigParser()
         config.read('credentials.ini')
@@ -274,9 +274,14 @@ class localStorage(DB):
     
     def insertData(self, userName):
         try:
-            self.cursor.execute("INSERT INTO Users VALUES(?)", (userName,))
-            self.conn.commit()
-            return "Done successfully"
+            self.cursor.execute("SELECT * FROM Users WHERE userName = '?'", userName)
+            row = self.cursor.fetchone()
+            if(row):
+                return "User already exists"
+            else:
+                self.cursor.execute("INSERT INTO Users VALUES(?)", (userName,))
+                self.conn.commit()
+                return "Done successfully"
         except Exception as e:
             return e
     def extractData(self):
@@ -295,7 +300,12 @@ class localStorage(DB):
             return e
                 
 if __name__ == "__main__":
-    base = localStorage()
+    #base = localStorage()
     #print(base.insertData("Baasil"))
     #print(base.extractData())
-    print(base.deleteData())             
+    base = Database()
+    if(base.verifyUser("Baasil", "booter") == True):
+        print("True")
+    else:
+        print("False")
+    #print(base.deleteData())             
