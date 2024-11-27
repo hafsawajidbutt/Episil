@@ -1,7 +1,7 @@
 import flask
 from flask import Flask, request, jsonify
 import sqlite3
-from database import Database
+from database import Database, localStorage
 import string
 import random
 import bcrypt
@@ -34,13 +34,15 @@ def addUser():
 def verifyUser():
     print("In verify user")
     d1 = Database()
+    ls = localStorage()
     userName = request.form.get("userName")
     passWord = request.form.get("passWord")
     if (d1.verifyUser(userName, passWord)):
+        ls.insertData(userName)
         data = {'message': 'Success'}
         response = flask.make_response(jsonify(data))
-        print(userName)
-        response.set_cookie('userName', userName, expires = datetime.datetime.now() + datetime.timedelta(days = 30), httponly = False, secure = True)
+        #print(userName)
+        #response.set_cookie('userName', userName, expires = datetime.datetime.now() + datetime.timedelta(days = 30), httponly = False, secure = True)
         return response
     else:
         data = {'message': 'Failure'}
@@ -141,10 +143,10 @@ def getEpisodeRecord():
     except Exception as e:
         return e
 
-@app.route('/getCookie', methods = ["GET"])
+@app.route('/getUser', methods = ["GET"])
 def getCookie():
-    userName = request.cookies.get('userName')
-    print(userName)
+    ls = localStorage()
+    userName = ls.extractData()
     if(userName):
         data = {'userName': str(userName)}
         response = flask.make_response(jsonify(data))
@@ -162,12 +164,18 @@ def getDownloadOptions():
     try:
         rows = d1.getDownloadOptions(show)
         return rows
-        # episodes = []
-        # for row in rows:
-        #     episodes.append(row[0]['value'])
-        # return episodes
     except Exception as e:
-        return e 
+        return e
+
+@app.route('/logOut', methods = ["POST"])
+def logOut():
+    ls = localStorage()
+    try:
+        ls.deleteData()
+        return "Successful Logout"
+    except Exception as e:
+        return e
+ 
 
 if __name__ == "__main__":
     app.run(debug=True)
