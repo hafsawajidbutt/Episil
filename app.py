@@ -139,7 +139,7 @@ def getEpisodeRecord():
         return e
 
 @app.route('/getUser', methods = ["GET"])
-def getCookie():
+def getUser():
     ls = localStorage()
     userName = ls.extractData()
     if(userName):
