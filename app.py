@@ -38,7 +38,7 @@ def verifyUser():
     userName = request.form.get("userName")
     passWord = request.form.get("passWord")
     if (d1.verifyUser(userName, passWord)):
-        ls.insertData(userName)
+        print(ls.insertData(userName))
         data = {'message': 'Success'}
         response = flask.make_response(jsonify(data))
         #print(userName)
@@ -73,21 +73,25 @@ def insertShow():
 @app.route('/getUserShows', methods = ["GET"])
 def getShows():
     d1 = Database()
-    userName = request.form.get("userName")
+    userName = request.args.get("userName")
     try:
         rows = d1.getUserShows(userName)
-        animeNames = []
-        bannerPics = []
-        resArr = []
-        for row in rows:
-            animeNames.append(row[0]['value'])
-            anilist = Anilist()
-            anime_data = anilist.get_anime(row[0]['value'])
-            bannerPics.append(anime_data['cover_image'])
-        for i in range(len(animeNames)):
-            resArr.append(animeNames[i])
-            resArr.append(bannerPics[i])
-        return resArr
+        if(rows == "User has no shows"):
+            return "User has no shows"
+        else:
+            animeNames = []
+            bannerPics = []
+            resArr = []
+            for row in rows:
+                animeNames.append(row[0]['value'])
+                anilist = Anilist()
+                anime_data = anilist.get_anime(row[0]['value'])
+                bannerPics.append(anime_data['cover_image'])
+            for i in range(len(animeNames)):
+                resArr.append(animeNames[i])
+                resArr.append(bannerPics[i])
+            print(resArr)
+            return resArr
     except Exception as e:
         return {"error": str(e)}
 
