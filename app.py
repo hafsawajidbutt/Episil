@@ -193,9 +193,15 @@ def logOut():
     ls = localStorage()
     try:
         ls.deleteData()
-        return "Successful Logout"
+        data = {'message' : 'Successful logout'}
+        response = flask.make_response(jsonify(data))       
+        return response
     except Exception as e:
-        return e
+        print(e)
+        data = {'message' : 'Failed logout'}
+        response = flask.make_response(jsonify(data))       
+        return response
+        
  
 
 if __name__ == "__main__":

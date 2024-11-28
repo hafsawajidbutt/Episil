@@ -49,14 +49,17 @@ async function showDropdown() {
                 var data = await response2.json()
                 console.log(response2)
                 console.log(data.message)
-                //console.log(data)
                 loadPage()
+                const request2 = new Request("http://127.0.0.1:5000/download", {
+                    method: "POST",
+                    body: formData});
+                const response3 = await fetch(request2)
+                var data2 = await response3.json()
+                console.log()
             };
-
             // Append option text and heart button to the dropdown item
             dropdownItem.appendChild(optionText)
             dropdownItem.appendChild(heartButton)
-
             // Append the dropdown item to the dropdown
             dropdown.appendChild(dropdownItem)
             index++
@@ -66,6 +69,15 @@ async function showDropdown() {
         dropdown.classList.add("hidden") // Hide the dropdown if input is empty
     }
 }
+document.querySelector("#logOut").addEventListener("click", async function()
+{
+    const request = new Request("http://127.0.0.1:5000/logOut", {
+        method: "POST"});
+    const response = await fetch(request)
+    var data = await response.json()
+    console.log(data)
+    window.location.href = "./login.html"
+})
 async function loadPage()
 {
     console.log("Page about to load")
