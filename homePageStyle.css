@@ -77,6 +77,16 @@ body::before {
     border-radius: 5px;
     font-size: 1rem;
 }
+#search-button {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#search-button img {
+  width: 30px;
+  height: 30px;
+}
 /*
 .search-bar {
     width: 50%;
