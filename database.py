@@ -302,8 +302,10 @@ class localStorage(DB):
 if __name__ == "__main__":
     #base = localStorage()
     base = Database()
-    base.insertShow("Baasil", "Tokyo Ghoul")
-    base.insertShow("Baasil", "Orbital Children")
+    base.insertShow("Baasil", "Tokyo Mew Mew")
+    # base.insertShow("Baasil", "Tokyo Ghoul: "Jack"")
+    # base.insertShow("Baasil", "Tokyo Ghoul")
+    # base.insertShow("Baasil", "Orbital Children")
     #print(base.insertData("Baasil"))
     # base = Database()
     # if(base.verifyUser("Baasil", "booter") == True):

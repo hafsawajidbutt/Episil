@@ -65,10 +65,19 @@ def insertShow():
     d1 = Database()
     userName = request.form.get("userName")
     show = request.form.get("show")
+    print("Username" + userName)
+    print("show" + show)
     try:
-        return d1.insertShow(userName, show)
+        d1.insertShow(userName, show)
+        print("Inserted")
+        data = {'message': 'Success'}
+        response = flask.make_response(jsonify(data))
+        return response
     except Exception as e:
-        return e
+        print(e)
+        data = {'message': 'Failure'}
+        response = flask.make_response(jsonify(data))
+        return response
 
 @app.route('/getUserShows', methods = ["GET"])
 def getShows():
@@ -168,6 +177,17 @@ def getDownloadOptions():
     except Exception as e:
         return e
 
+@app.route('/download', methods = ["POST"])
+def download():
+    userName = request.form.get("userName")
+    show = request.form.get("show")
+    d1 = downloader(userName)
+    try:
+        d1.download(show)
+    except Exception as e:
+        print(e)
+        return e
+    
 @app.route('/logOut', methods = ["POST"])
 def logOut():
     ls = localStorage()

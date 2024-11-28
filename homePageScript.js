@@ -1,15 +1,16 @@
+let showName = ""
+let showData = []
+let currentUser = ""
 async function showDropdown() {
     console.log("In show dropdown")
     const searchBar = document.getElementById("search-bar")
-    let showName = searchBar.value
+    showName = searchBar.value
     console.log(showName)
     const dropdown = document.getElementById("dropdown")
     const response = await fetch(`http://127.0.0.1:5000/getDownloadOptions?userName=${currentUser}&show=${showName}`)
-    let showData = []
     showData = await response.json()
     console.log(showData)
-    // Sample generic options for the dropdown
-    const options = showData//["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"]
+    const options = showData//["option 1", "option 2", "option 3"]
     
     // Clear existing options
     dropdown.innerHTML = ""
@@ -19,10 +20,10 @@ async function showDropdown() {
         dropdown.classList.remove("hidden") // Show the dropdown
         console.log("In correct if")
         // Add each option to the dropdown
+        let index = 0
         options.forEach(option => {
             const dropdownItem = document.createElement("div")
             dropdownItem.classList.add("dropdown-item")
-            
             // Create text for the dropdown option
             const optionText = document.createElement("span")
             optionText.textContent = option;
@@ -30,10 +31,26 @@ async function showDropdown() {
             // Create the like button
             const heartButton = document.createElement("button")
             heartButton.classList.add("heart-button")
+            heartButton.id = option
             heartButton.innerHTML = "&#x2661;" // Heart symbol
-            heartButton.onclick = function () {
+            heartButton.onclick = async function (event) {
                 this.classList.toggle("liked")
                 this.innerHTML = this.classList.contains("liked") ? "&#x2764;" : "&#x2661;"
+                let show = event.target.id
+                console.log("Show clicked: "+ show)
+                console.log("By: " + currentUser)
+                const formData = new FormData();
+                formData.append('userName', currentUser);
+                formData.append('show', show);
+                const request = new Request("http://127.0.0.1:5000/insertShow", {
+                    method: "POST",
+                    body: formData});
+                const response2 = await fetch(request)
+                var data = await response2.json()
+                console.log(response2)
+                console.log(data.message)
+                //console.log(data)
+                loadPage()
             };
 
             // Append option text and heart button to the dropdown item
@@ -42,22 +59,15 @@ async function showDropdown() {
 
             // Append the dropdown item to the dropdown
             dropdown.appendChild(dropdownItem)
-        })
+            index++
+        })  
         console.log("Options appended")
     } else {
         dropdown.classList.add("hidden") // Hide the dropdown if input is empty
     }
 }
-// document.onload = async function()
-// {
-//     const response = await fetch("http://127.0.0.1:5000/getCookie")
-//     var data = await response.json()
-//     console.log(response)
-//     console.log(data)
-//     console.log("Code has run!")
-// }
-let currentUser = ""
-window.addEventListener('load', async function() {
+async function loadPage()
+{
     console.log("Page about to load")
     const request = new Request("http://127.0.0.1:5000/getUser", {
         method: "GET"})
@@ -65,8 +75,6 @@ window.addEventListener('load', async function() {
     let data = await response.json()
     currentUser = data.userName
     console.log(currentUser)
-    const formData = new FormData()
-    formData.append('userName', data.userName)
     const response2 = await fetch(`http://127.0.0.1:5000/getUserShows?userName=${currentUser}`)
     let showData = []
     showData = await response2.json()
@@ -83,6 +91,7 @@ window.addEventListener('load', async function() {
     console.log("Animes: " + animeNames)
     console.log("Banners: " + banners)
     parentDiv = this.document.querySelector(".grid")
+    parentDiv.innerHTML = '<div class="movie-card"><div class="movie-image"></div><div class="movie-title"></div></div>'
     storeDiv = this.document.querySelector(".movie-card")
     storeDiv.querySelector(".movie-image").innerHTML = `<img src = ${banners[0]}>`
     storeDiv.querySelector(".movie-title").innerHTML = `<p> ${animeNames[0]} </p>`
@@ -97,4 +106,7 @@ window.addEventListener('load', async function() {
         }
     }
     console.log("Page loaded")
+}
+window.addEventListener('load', async function() {
+    loadPage()
 });
