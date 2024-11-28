@@ -196,7 +196,6 @@ class downloader:
         time.sleep(10)
         searchResults = driver.find_element(By.CLASS_NAME, "search-results")
         searchArr = searchResults.text.split('\n')
-        searchArr = ['Tokyo Ghoul', 'TV - 12 Episodes (Finished Airing)', 'Summer 2014', 'Tokyo Ghoul √A', 'TV - 12 Episodes (Finished Airing)', 'Winter 2015', 'Tokyo Ghoul:re', 'TV - 12 Episodes (Finished Airing)', 'Spring 2018', 'Tokyo Ghoul:re 2nd Season', 'TV - 12 Episodes (Finished Airing)', 'Fall 2018', 'Tokyo Ghoul: "Jack"', 'OVA - 1 Episode (Finished Airing)', 'Fall 2015', 'Tokyo Ghoul: "Pinto"', 'OVA - 1 Episode (Finished Airing)', 'Winter 2016', 'A Terrified Teacher at Ghoul School!', 'TV - 24 Episodes (Currently Airing)', 'Fall 2024', 'Tokyo Mew Mew', 'TV - 52 Episodes (Finished Airing)', 'Spring 2002']
         count = 0
         for res in searchArr:
             if(searchArr.index(res) % 3 != 0):
