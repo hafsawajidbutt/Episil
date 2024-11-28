@@ -157,8 +157,10 @@ def getUser():
 
 @app.route('/getDownloadOptions', methods = ["GET"])
 def getDownloadOptions():
-    userName = request.form.get("userName")
-    show = request.form.get("show")
+    userName = request.args.get("userName")
+    show = request.args.get("show")
+    print("Username: " + userName)
+    print("Show: "+ show)
     d1 = downloader(userName)
     try:
         rows = d1.getDownloadOptions(show)

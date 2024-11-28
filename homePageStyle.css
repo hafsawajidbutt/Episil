@@ -111,6 +111,7 @@ body::before {
     padding: 10px;
     border-bottom: 1px solid #eee;
     cursor: pointer;
+    color: black;
 }
 
 .dropdown-item:last-child {

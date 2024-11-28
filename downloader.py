@@ -204,10 +204,11 @@ class downloader:
                 count += 1
         for i in range(count):
             searchArr.remove(" ")
+        driver.quit()
         return searchArr
         
 if __name__ == "__main__":
     d1 = downloader("Baasil")
     #d1.airingDownload("Tokyo Ghoul")
-    d1.getDownloadOptions("Tokyo Ghoul")
+    print(d1.getDownloadOptions("Tokyo Ghoul"))
         
