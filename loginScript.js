@@ -1,5 +1,6 @@
 document.getElementById("loginButton").addEventListener("click", async function()
 {
+    document.getElementById("loader").classList.add("loader")
     console.log(document.getElementById("email").value)
     console.log(document.getElementById("password").value)
     const formData = new FormData();
@@ -14,10 +15,12 @@ document.getElementById("loginButton").addEventListener("click", async function(
     if(data.message === "Success")
     {
         console.log("Success")
+        document.getElementById("loader").classList.remove("loader")
         window.location.href = "./homePage.html"
     }    
     else if(data.message === "Failure")
     {
+        document.getElementById("loader").classList.remove("loader")
         console.log("Failure")
         document.getElementById("email").value = ""
         document.getElementById("password").value = ""

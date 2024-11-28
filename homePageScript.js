@@ -2,6 +2,7 @@ let showName = ""
 let showData = []
 let currentUser = ""
 async function showDropdown() {
+    this.document.getElementById("loader").classList.add("loader")
     console.log("In show dropdown")
     const searchBar = document.getElementById("search-bar")
     showName = searchBar.value
@@ -34,6 +35,7 @@ async function showDropdown() {
             heartButton.id = option
             heartButton.innerHTML = "&#x2661;" // Heart symbol
             heartButton.onclick = async function (event) {
+                this.document.getElementById("loader").classList.add("loader")
                 this.classList.toggle("liked")
                 this.innerHTML = this.classList.contains("liked") ? "&#x2764;" : "&#x2661;"
                 let show = event.target.id
@@ -49,6 +51,7 @@ async function showDropdown() {
                 var data = await response2.json()
                 console.log(response2)
                 console.log(data.message)
+                this.document.getElementById("loader").classList.add("loader")
                 loadPage()
                 const request2 = new Request("http://127.0.0.1:5000/download", {
                     method: "POST",
@@ -63,7 +66,8 @@ async function showDropdown() {
             // Append the dropdown item to the dropdown
             dropdown.appendChild(dropdownItem)
             index++
-        })  
+        })
+        this.document.getElementById("loader").classList.remove("loader")  
         console.log("Options appended")
     } else {
         dropdown.classList.add("hidden") // Hide the dropdown if input is empty
@@ -71,15 +75,19 @@ async function showDropdown() {
 }
 document.querySelector("#logOut").addEventListener("click", async function()
 {
+    document.getElementById("loader").classList.add("loader")
     const request = new Request("http://127.0.0.1:5000/logOut", {
         method: "POST"});
     const response = await fetch(request)
     var data = await response.json()
     console.log(data)
+    document.getElementById("loader").classList.remove("loader")
     window.location.href = "./login.html"
 })
 async function loadPage()
 {
+    this.document.getElementById("loader").classList.add("loader")
+    console.log("Added class")
     console.log("Page about to load")
     const request = new Request("http://127.0.0.1:5000/getUser", {
         method: "GET"})
@@ -117,8 +125,11 @@ async function loadPage()
             parentDiv.appendChild(cloneDiv)
         }
     }
+    this.document.getElementById("loader").classList.remove("loader")
+    console.log("Removed class")
     console.log("Page loaded")
 }
-window.addEventListener('load', async function() {
+window.addEventListener('load', function() {
+    
     loadPage()
 });

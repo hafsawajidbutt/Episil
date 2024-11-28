@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Episil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href = "homePageStyle.css">
 </head>
 <body>
-    
-    <div class="main-container">
-       
+    <div class = "main-container">
         <div class="navbar">
             <button class="nav-button">Home</button>
             <!-- <input type="text" class="search-bar" placeholder="Search...">  -->
@@ -28,14 +29,14 @@
             <button class="nav-button">Download History</button>
             <button class="nav-button" id = "logOut">Log Out</button>
         </div>
-        <br/>
+        <div id = "loader"></div>
         <div class="grid">
             <div class="movie-card">
                 <div class="movie-image"></div>
                 <div class="movie-title"></div>
             </div>
-        </div>
-    </div>
+        </div>            
+    </div> 
     <script src = "./homePageScript.js"></script>
 </body>
 </html>

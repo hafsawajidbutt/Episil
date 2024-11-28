@@ -1,5 +1,6 @@
 document.getElementById("signUp").addEventListener("click", async function()
 {
+    document.getElementById("loader").classList.add("loader")
     username = document.getElementById("username").value
     email = document.getElementById("email").value
     password = document.getElementById("password").value
@@ -21,6 +22,7 @@ document.getElementById("signUp").addEventListener("click", async function()
         console.log(response)
         console.log(data)
         if(data.message == "Success")
+            document.getElementById("loader").classList.remove("loader")
             window.location.href = "./login.html"
     }
 })
