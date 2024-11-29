@@ -86,6 +86,10 @@ document.querySelector("#logOut").addEventListener("click", async function()
 })
 async function loadPage()
 {
+    classList = document.querySelector(".movie-card").classList
+    if("hidden" in classList)
+        document.querySelector(".movie-card").classList.add("hidden")
+    document.querySelector(".movie-card").classList.add("hidden")
     this.document.getElementById("loader").classList.add("loader")
     console.log("Added class")
     console.log("Page about to load")
@@ -126,6 +130,7 @@ async function loadPage()
         }
     }
     this.document.getElementById("loader").classList.remove("loader")
+    document.querySelectorAll(".movie-card").classList.remove("hidden")
     console.log("Removed class")
     console.log("Page loaded")
 }
