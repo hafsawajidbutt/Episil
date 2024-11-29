@@ -166,6 +166,7 @@ class downloader:
 
     def download(self, anime_name):
         anilist = self.anilist    
+        print("In download")
         anime_data = anilist.get_anime(anime_name)
         print(anime_data)
         if anime_data['airing_status'] == "FINISHED":
@@ -209,5 +210,6 @@ class downloader:
 if __name__ == "__main__":
     d1 = downloader("Baasil")
     #d1.airingDownload("Tokyo Ghoul")
-    print(d1.getDownloadOptions("Tokyo Ghoul"))
+    d1.download("Tokyo Mew Mew")
+    #print(d1.getDownloadOptions("Tokyo Ghoul"))
         

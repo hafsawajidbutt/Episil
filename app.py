@@ -179,14 +179,23 @@ def getDownloadOptions():
 
 @app.route('/download', methods = ["POST"])
 def download():
+    print("In download")
     userName = request.form.get("userName")
     show = request.form.get("show")
+    print(userName)
+    print(show)
     d1 = downloader(userName)
     try:
+        print("In try")
         d1.download(show)
+        data = {'message': "Success"}
+        response = flask.make_response(jsonify(data))
+        return response
     except Exception as e:
         print(e)
-        return e
+        data = {'message': "Failure"}
+        response = flask.make_response(jsonify(data))
+        return response
     
 @app.route('/logOut', methods = ["POST"])
 def logOut():
@@ -202,7 +211,5 @@ def logOut():
         response = flask.make_response(jsonify(data))       
         return response
         
- 
-
 if __name__ == "__main__":
     app.run(debug=True)
