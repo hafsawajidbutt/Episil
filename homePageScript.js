@@ -135,6 +135,5 @@ async function loadPage()
     console.log("Page loaded")
 }
 window.addEventListener('load', function() {
-    
     loadPage()
 });
