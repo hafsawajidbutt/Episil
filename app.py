@@ -222,6 +222,19 @@ def changeProfilePicture():
         return rows
     except Exception as e:
         return e
+    
+@app.route("/removeShow", methods = ["POST"])
+def removeShow():
+    userName = request.form.get("userName")
+    show = request.form.get("show")
+    print("Username: " + userName)
+    print("Show: "+ show)
+    d1 = Database()
+    try:
+        rows = d1.removeShow(userName, show)
+        return rows
+    except Exception as e:
+        return e
           
 @app.route('/logOut', methods = ["POST"])
 def logOut():

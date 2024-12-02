@@ -41,7 +41,8 @@ class Database():
                 show TEXT,
                 episodeNum INT,
                 PRIMARY KEY(userName, show, episodeNum),
-                FOREIGN KEY(userName) REFERENCES User(userName))"""}},
+                FOREIGN KEY(userName) REFERENCES User(userName))
+                FOREIGN KEY(show) REFERENCES UserShow(show)"""}},
                 {"type": "close"}
             ]
         }
@@ -299,6 +300,29 @@ class Database():
             "requests": 
                 [
                 {"type": "execute", "stmt": {"sql": f""" UPDATE User SET profilePictureLink = "{newProfilePictureLink}" where userName = "{userName}" """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            return data
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
+    def removeShow(self, userName, show):
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
+        
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f""" DELETE FROM UserShow WHERE userName = "{userName}" and show = "{show}" """}},
                 {"type": "close"},
             ]
         }
