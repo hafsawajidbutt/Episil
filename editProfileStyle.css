@@ -40,43 +40,10 @@ body::before {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 80%;
+    width: 35%;
     max-width: 900px;
-    height: 80%;
+    height: 35%;
     z-index: 2;
-}
-
-/* Profile Photo */
-.profile-photo {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.profile-photo img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #ff0000;
-    margin-bottom: 10px;
-}
-
-.upload-btn {
-    display: inline-block;
-    background-color: #ff0000;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-top: 10px;
-}
-
-#upload-photo {
-    display: none;
 }
 
 /* Edit Profile Form */
@@ -84,19 +51,23 @@ body::before {
     padding: 20px;
     width: 100%;
     max-width: 500px;
+    position: absolute;
 }
 
 .edit-profile-form h1 {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #ff0000;
-    text-align: left;
+    text-align: center;
+    margin-left: 5%;
+    /* margin-left: 50%; */
 }
 
 .edit-profile-form label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
+    margin-left: 15%;
 }
 
 .edit-profile-form input {
@@ -106,6 +77,7 @@ body::before {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+    margin-left: 15%;
 }
 
 .edit-profile-form button {
@@ -118,6 +90,7 @@ body::before {
     font-size: 1rem;
     width: 76%;
     margin-top: 3%;
+    margin-left: 15%;
 }
 
 .edit-profile-form button:hover {

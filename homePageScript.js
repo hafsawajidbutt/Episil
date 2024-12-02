@@ -137,3 +137,7 @@ async function loadPage()
 window.addEventListener('load', function() {
     loadPage()
 });
+document.querySelector("#editProfile").addEventListener('click', function()
+{
+    window.location.href = "./editProfile.html"
+})
