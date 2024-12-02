@@ -196,7 +196,33 @@ def download():
         data = {'message': "Failure"}
         response = flask.make_response(jsonify(data))
         return response
-    
+
+@app.route('/changeUserName', methods = ["POST"])
+def changeUserName():
+    userName = request.form.get("userName")
+    newUserName = request.form.get("newUserName")
+    print("Username: " + str(userName))
+    print("New Username: "+ str(newUserName))
+    d1 = Database()
+    try:
+        rows = d1.changeUserName(userName, newUserName)
+        return rows
+    except Exception as e:
+        return e
+
+@app.route('/changeProfilePicture', methods = ["POST"])
+def changeProfilePicture():
+    userName = request.form.get("userName")
+    profilePictureLink = request.form.get("profilePictureLink")
+    print("Username: " + userName)
+    print("Profile Picture Link: "+ profilePictureLink)
+    d1 = Database()
+    try:
+        rows = d1.changeProfilePictureLink(userName, profilePictureLink)
+        return rows
+    except Exception as e:
+        return e
+          
 @app.route('/logOut', methods = ["POST"])
 def logOut():
     ls = localStorage()

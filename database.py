@@ -23,21 +23,25 @@ class Database():
         body = {
             "requests": 
                 [
-                {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS User
-                            (userName TEXT PRIMARY KEY,
-                            password TEXT,
-                            profilePictureLink TEXT,
-                            email TEXT,
-                            downloadLocation TEXT)"""}},
-                {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS UserShow
-                            (userName TEXT,
-                            show TEXT,
-                            PRIMARY KEY(userName, show))"""}},
-                {"type" : "execute", "stmt" : {"sql": """CREATE TABLE IF NOT EXISTS UserHistory
-                                               (userName TEXT,
-                                               show TEXT,
-                                               episodeNum INT,
-                                               PRIMARY KEY(userName, show, episodeNum))"""}},
+                {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS User (
+                    userName TEXT PRIMARY KEY,
+                    password TEXT,
+                    profilePictureLink TEXT,
+                    email TEXT,
+                    downloadLocation TEXT
+                )"""}},
+                {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS UserShow (
+                    userName TEXT,
+                    show TEXT,
+                    PRIMARY KEY(userName, show),
+                    FOREIGN KEY(userName) REFERENCES User(userName)
+                )"""}},
+                {"type" : "execute", "stmt" : {"sql": """CREATE TABLE IF NOT EXISTS UserHistory (
+                userName TEXT,
+                show TEXT,
+                episodeNum INT,
+                PRIMARY KEY(userName, show, episodeNum),
+                FOREIGN KEY(userName) REFERENCES User(userName))"""}},
                 {"type": "close"}
             ]
         }
@@ -264,7 +268,52 @@ class Database():
                 return rows
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
+    
+    def changeUserName(self, oldUserName, newUserName):
+        userName = bcrypt.hashpw(oldUserName.encode(), self.salt)
+        newUserName = bcrypt.hashpw(newUserName.encode(), self.salt)
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f""" UPDATE User SET userName = "{newUserName}" where userName = "{userName}" """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            return data
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
+    
+    def changeProfilePictureLink(self, userName, newProfilePictureLink):    
+        userName = bcrypt.hashpw(userName.encode(), self.salt)
         
+        body = {
+            "requests": 
+                [
+                {"type": "execute", "stmt": {"sql": f""" UPDATE User SET profilePictureLink = "{newProfilePictureLink}" where userName = "{userName}" """}},
+                {"type": "close"},
+            ]
+        }
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.post(self.url, headers=headers, json=body)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+            data = response.json()
+            return data
+        except requests.exceptions.RequestException as err:
+            print(f"Error: {err}")
 class localStorage(DB):
     def __init__(self):
         self.conn = sqlite3.connect("episil.db")
@@ -302,10 +351,12 @@ class localStorage(DB):
 if __name__ == "__main__":
     #base = localStorage()
     base = Database()
+    base.insertUser("Baasil", "booter", "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.deviantart.com%2Fayayyuki%2Fart%2FToon-Link-Profile-Pic-commission-781975060&psig=AOvVaw3CbOW8L2HQd_Wnw6A8Du4d&ust=1733256781541000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCKCE9rHgiIoDFQAAAAAdAAAAABAE", "baaasil@gmail.com")
+    
     base.insertShow("Baasil", "Tokyo Mew Mew")
     # base.insertShow("Baasil", "Tokyo Ghoul: "Jack"")
-    # base.insertShow("Baasil", "Tokyo Ghoul")
-    # base.insertShow("Baasil", "Orbital Children")
+    base.insertShow("Baasil", "Tokyo Ghoul")
+    base.insertShow("Baasil", "Orbital Children")
     #print(base.insertData("Baasil"))
     # base = Database()
     # if(base.verifyUser("Baasil", "booter") == True):
