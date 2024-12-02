@@ -12,29 +12,31 @@
 <body>
     <div class = "main-container">
         <div class="navbar">
-            <button class="nav-button">Home</button>
             <!-- <input type="text" class="search-bar" placeholder="Search...">  -->
             <div class="search-container">
                 <input type="text" id="search-bar" placeholder="Search..."/>
                 <button id="search-button" onclick="showDropdown()">
                     <img src="search.svg" alt="Search Icon">
+                    
                 </button>
                 <div id="dropdown" class="dropdown hidden"> </div>
             </div>
-            <div class="Profile">
+            <div id = "non-search">
+                <button class="nav-button" id = "editProfile">Edit Profile</button>
+                <button class="nav-button">Download History</button>
+                <button class="nav-button" id = "logOut">Log Out</button>
+            </div>
+            <!-- <div class="Profile">
                 <button id="profile-button">
                     <img src="profile.svg" alt="Profile Icon">
-                </button>
+                </button> -->
                 <!-- <div id="dropdown" class="dropdown hidden"> </div> -->
                 <!-- <div class="dropdown-content">
                     <a href="#">My Profile</a>
                     <a href="#">Settings</a>
                     <a href="#">Logout</a>
                 </div> -->
-            </div>
-            <button class="nav-button" id = "editProfile">Edit Profile</button>
-            <button class="nav-button">Download History</button>
-            <button class="nav-button" id = "logOut">Log Out</button>
+            <!-- </div> -->
         </div>
         <div id = "loader"></div>
         <div class="grid">
