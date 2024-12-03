@@ -129,7 +129,7 @@ body::before {
 /* ##Device = Desktops | Screen = 1281px and higher */
 @media (min-width: 1281px) {
     .profile-container {
-        width: 50%;
+        width: 40%;
         height: 50%;
     }
 }
