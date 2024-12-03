@@ -41,11 +41,12 @@ class Database():
                 show TEXT,
                 episodeNum INT,
                 PRIMARY KEY(userName, show, episodeNum),
-                FOREIGN KEY(userName) REFERENCES User(userName),
-                FOREIGN KEY(show) REFERENCES UserShow(show) )"""}},
+                FOREIGN KEY(userName, show) REFERENCES UserShow(userName, show),
+                )"""}},
                 {"type": "close"}
             ]
         }
+        #FOREIGN KEY(show) REFERENCES UserShow(show) 
         headers = {
             "Authorization": f"Bearer {self.auth_token}",
             "Content-Type": "application/json",
@@ -399,6 +400,7 @@ class localStorage(DB):
 if __name__ == "__main__":
     #base = localStorage()
     base = Database()
+    base.insertHistory("Baasil", "Orbital Children", 1)
     #base.insertUser("Pookie", "booter", "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.deviantart.com%2Fayayyuki%2Fart%2FToon-Link-Profile-Pic-commission-781975060&psig=AOvVaw3CbOW8L2HQd_Wnw6A8Du4d&ust=1733256781541000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCKCE9rHgiIoDFQAAAAAdAAAAABAE", "baaasil@gmail.com", "bungums")    
     # base.insertShow("Baasil", "Tokyo Mew Mew")
     # # base.insertShow("Baasil", "Tokyo Ghoul: "Jack"")

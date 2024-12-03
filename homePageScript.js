@@ -141,3 +141,7 @@ document.querySelector("#editProfile").addEventListener('click', function()
 {
     window.location.href = "./editProfile.html"
 })
+document.querySelector("#history").addEventListener('click', function()
+{
+    window.location.href = "./downloadHistory.html"
+})

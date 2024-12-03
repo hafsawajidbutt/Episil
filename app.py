@@ -125,9 +125,11 @@ def getShowHistory():
 @app.route('/getDownloadHistory', methods = ["GET"])
 def getDownloadHistory():
     d1 = Database()
-    userName = request.form.get("userName")
+    userName = request.args.get("userName")
     try:
         rows = d1.getUserHistory(userName)
+        if(rows == "No episodes have been downloaded for this show"):
+            return rows
         animeNames = []
         episodeNums = []
         finalRes = []
