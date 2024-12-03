@@ -115,17 +115,44 @@ async function loadPage()
     console.log("Animes: " + animeNames)
     console.log("Banners: " + banners)
     parentDiv = this.document.querySelector(".grid")
-    parentDiv.innerHTML = '<div class="movie-card"><div class="movie-image"></div><div class="movie-title"></div></div>'
+    parentDiv.innerHTML = '<div class="movie-card"><div class="movie-image"></div><div class="movie-title"></div><button type = "button" class = "remove-button">Remove</button></div>'
     storeDiv = this.document.querySelector(".movie-card")
     storeDiv.querySelector(".movie-image").innerHTML = `<img src = ${banners[0]}>`
     storeDiv.querySelector(".movie-title").innerHTML = `<p> ${animeNames[0]} </p>`
+    storeDiv.querySelector(".remove-button").addEventListener("click", async function()
+    {
+        this.document.getElementById("loader").classList.add("loader")
+        const formData = new FormData();
+        formData.append('userName', currentUser);
+        formData.append('show', animeNames[0]);
+        const request = new Request("http://127.0.0.1:5000/removeShow", {
+            method: "POST",
+            body: formData});
+        const response2 = await fetch(request)
+        loadPage()
+        this.document.getElementById("loader").classList.remove("loader")
+    })
     if(animeNames.length > 1)
     {
         for(let i = 1; i < animeNames.length; i++)
         {
             cloneDiv = storeDiv.cloneNode(true)
-            storeDiv.querySelector(".movie-image").innerHTML = `<img src = ${banners[i]}>`
-            storeDiv.querySelector(".movie-title").innerHTML = `<p> ${animeNames[i]} </p>`
+            cloneDiv.querySelector(".movie-image").innerHTML = `<img src = ${banners[i]}>`//was storeDiv
+            cloneDiv.querySelector(".movie-title").innerHTML = `<p> ${animeNames[i]} </p>` //was storeDiv
+            cloneDiv.querySelector(".remove-button").addEventListener("click", async function()
+            {
+                document.getElementById("loader").classList.add("loader")
+                const formData = new FormData();
+                formData.append('userName', currentUser);
+                formData.append('show', animeNames[i]);
+                const request = new Request("http://127.0.0.1:5000/removeShow", {
+                    method: "POST",
+                    body: formData});
+                const response = await fetch(request)
+                console.log(response)
+                loadPage()
+                document.getElementById("loader").classList.remove("loader")
+            })
             parentDiv.appendChild(cloneDiv)
         }
     }

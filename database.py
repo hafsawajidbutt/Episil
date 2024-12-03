@@ -9,10 +9,11 @@ class DB(ABC):
     @abstractmethod
     def insertData(self):
         pass
+    @abstractmethod
     def extractData(self):
         pass
     
-class Database():
+class Database(DB):
     def __init__(self):
         config = configparser.ConfigParser()
         config.read('credentials.ini')
@@ -57,6 +58,11 @@ class Database():
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
     
+    def insertData(self):
+        return super().insertData()
+    
+    def extractData(self):
+        return super().extractData()
     
     def insertUser(self, userName, passWord, profilePictureLink, email, downloadLocation = " "):
         userName = bcrypt.hashpw(userName.encode(), self.salt)
