@@ -23,27 +23,80 @@ import os
 import datetime
 import subprocess
 import sqlite3
-from database import Database
+from database import Database, localStorage
 import pyautogui
-class downloader:
-    def __init__(self, userName):
-        self.anilist = Anilist()
-        self.driver = None#uc.Chrome()
-        self.driver2 = None#uc.Chrome()
-        self.qb = None#Client('http://127.0.0.1:8080/')
-        self.userName = userName
-        self.customDownload = False
+from abc import ABC, abstractmethod
+
+class airedDownloader():
+    def __init__(self):
+        self.qb = None
+    
+    def airedDownload(self, anime_name):
+        try:
+            self.qb = Client('http://127.0.0.1:8080/')
+            qb = self.qb
+            qb.login('admin', 'hafsapotty')
+        except Exception as e:
+            if(type(e) == requests.exceptions.ConnectionError):
+                for root, dirs, files in os.walk(r'C:\Program Files'):
+                    for name in files:
+                        if name == "qbittorrent.exe":
+                            path = os.path.abspath(os.path.join(root, name))
+                            break
+                subprocess.call([path])
+                qb.login('admin', 'hafsapotty')
+        new_anime_name = "%20".join(anime_name.split())
+        try:
+            response = requests.get(f"https://nyaaapi.onrender.com/nyaa?q={new_anime_name}", verify=False)
+            dic = response.json()
+            animeTitle = dic["data"][0]["title"]
+            torrentLink = dic["data"][0]["torrent"]
+            magnetLink = dic["data"][0]["magnet"]
+            print(magnetLink)
+            print(torrentLink)
+            qb.download_from_link(torrentLink)
+        except Exception as e:
+            print("In exception block")
+            print(e.args)
+    
+    
+class airingDownloader():
+    def __init__(self):
+        self.driver = None
+        self.driver2 = None
         d1 = Database()
-        rows = d1.getUserDownloadDirectory(self.userName)
-        download_dir = rows["results"][0]["response"]["result"]["rows"][0][0]["value"]
+        self.customDownload = False
+        self.userName = localStorage().extractData()
+        download_dir = d1.getUserDownloadDirectory(self.userName)["results"][0]["response"]["result"]["rows"][0][0]["value"]
         if(download_dir[-9::] == "Downloads"):
             # Create Chrome options
             self.customDownload = True
             self.chrome_options = Options()
             prefs = {"download.default_directory": download_dir}
             self.chrome_options.add_experimental_option("prefs", prefs)
-        #self.qb.login('admin', 'hafsapotty')
-        #self.conn = sqlite3.connect("epnis.db")
+        
+        
+    def findingEpisodes(self, name, quality):  
+        self.driver = uc.Chrome()
+        driver = self.driver
+        driver.get("https://animepahe.ru/")
+        time.sleep(10)
+        WebDriverWait(driver, 100).until(EC.presence_of_element_located, (By.CSS_SELECTOR, "input[placeholder='Search']"))
+        time.sleep(5)
+        print("Selector located")
+        time.sleep(5)
+        driver.find_element(By.CSS_SELECTOR, "input[placeholder='Search']").send_keys(name)
+        time.sleep(10)
+        WebDriverWait(driver, 100).until(EC.presence_of_element_located, (By.XPATH, "/html[1]/body[1]/header[1]/nav[1]/div[1]/form[1]/div[1]/ul[1]/li[1]/a[1]"))
+        driver.find_element(By.XPATH, "/html[1]/body[1]/header[1]/nav[1]/div[1]/form[1]/div[1]/ul[1]/li[1]/a[1]").click()
+        time.sleep(5)
+        play_links = driver.find_elements(By.CLASS_NAME, "play")
+        links = []
+        for playlink in play_links:
+            links.append(playlink.get_attribute('href'))
+        links.reverse()
+        driver.quit()
+        return links
     
     def animepahe(self, link, quality):
         if(self.customDownload == False):
@@ -119,98 +172,7 @@ class downloader:
         downloadEnded = False
         print("While loop exited")
         driver2.quit()
-    
-    def findingEpisodes(self, name, quality):  
-        self.driver = uc.Chrome()
-        driver = self.driver
-        driver.get("https://animepahe.ru/")
-        time.sleep(10)
-        WebDriverWait(driver, 100).until(EC.presence_of_element_located, (By.CSS_SELECTOR, "input[placeholder='Search']"))
-        time.sleep(5)
-        print("Selector located")
-        time.sleep(5)
-        driver.find_element(By.CSS_SELECTOR, "input[placeholder='Search']").send_keys(name)
-        time.sleep(10)
-        WebDriverWait(driver, 100).until(EC.presence_of_element_located, (By.XPATH, "/html[1]/body[1]/header[1]/nav[1]/div[1]/form[1]/div[1]/ul[1]/li[1]/a[1]"))
-        driver.find_element(By.XPATH, "/html[1]/body[1]/header[1]/nav[1]/div[1]/form[1]/div[1]/ul[1]/li[1]/a[1]").click()
-        time.sleep(5)
-        play_links = driver.find_elements(By.CLASS_NAME, "play")
-        links = []
-        for playlink in play_links:
-            links.append(playlink.get_attribute('href'))
-        links.reverse()
-        driver.quit()
-        return links
-    
-    def airedDownload(self, anime_name):
-        try:
-            self.qb = Client('http://127.0.0.1:8080/')
-            qb = self.qb
-            qb.login('admin', 'hafsapotty')
-        except Exception as e:
-            if(type(e) == requests.exceptions.ConnectionError):
-                for root, dirs, files in os.walk(r'C:\Program Files'):
-                    for name in files:
-                        if name == "qbittorrent.exe":
-                            path = os.path.abspath(os.path.join(root, name))
-                            break
-                subprocess.call([path])
-                qb.login('admin', 'hafsapotty')
-        new_anime_name = "%20".join(anime_name.split())
-        try:
-            response = requests.get(f"https://nyaaapi.onrender.com/nyaa?q={new_anime_name}", verify=False)
-            dic = response.json()
-            animeTitle = dic["data"][0]["title"]
-            torrentLink = dic["data"][0]["torrent"]
-            magnetLink = dic["data"][0]["magnet"]
-            print(magnetLink)
-            print(torrentLink)
-            qb.download_from_link(torrentLink)
-        except Exception as e:
-            print("In exception block")
-            print(e.args)
-    
-    def airingDownload(self, anime_name, quality):
-        if(quality != "360p" and quality != "720p" and quality != "1080p"):
-            return "Incorrect Quality"
-        links = self.findingEpisodes(anime_name, quality)
-        db = Database()
-        for plink in links:
-            index = links.index(plink)
-            record = db.getEpisodeRecord(self.userName, anime_name, index)
-            if(record == 1 and index != 0):    
-                if(self.animepahe(plink, quality) == "Quality not found"):
-                    return "Quality not found"
-                db.insertHistory(self.userName, anime_name, index + 1)
-            else:
-                oldLink = links[links.index(plink) - 1]
-                if(self.animepahe(oldLink, quality) == "Quality not found"):
-                    return "Quality not found"
-                db.insertHistory(self.userName, anime_name, index)
-                if(self.animepahe(plink, quality) == "Quality not found"):
-                    return "Quality not found"
-                db.insertHistory(self.userName, anime_name, index)
-
-    def download(self, anime_name):
-        anilist = self.anilist    
-        print("In download")
-        anime_data = anilist.get_anime(anime_name)
-        print(anime_data)
-        if anime_data['airing_status'] == "FINISHED":
-            print("Already aired")
-            try:
-                self.airedDownload(anime_name)
-            except:
-                self.airingDownload(anime_name)
-        else:
-            print("Airing")
-            self.airingDownload(anime_name)    
-            # links = self.findingEpisodes("Tokyo Ghoul")
-            # for plink in links:
-            #     self.animepahe(plink)
-            #     cursor = self.conn.cursor()
-            #     cursor.execute("INSERT INTO History")
-    
+   
     def getDownloadOptions(self, name):
         self.driver = uc.Chrome()
         driver = self.driver
@@ -233,10 +195,56 @@ class downloader:
             searchArr.remove(" ")
         driver.quit()
         return searchArr
+    
+    def airingDownload(self, anime_name, quality):
+        if(quality != "360p" and quality != "720p" and quality != "1080p"):
+            return "Incorrect Quality"
+        links = self.findingEpisodes(anime_name, quality)
+        db = Database()
+        for plink in links:
+            index = links.index(plink)
+            record = db.getEpisodeRecord(self.userName, anime_name, index)
+            if(record == 1 and index != 0):    
+                if(self.animepahe(plink, quality) == "Quality not found"):
+                    return "Quality not found"
+                db.insertHistory(self.userName, anime_name, index + 1)
+            else:
+                oldLink = links[links.index(plink) - 1]
+                if(self.animepahe(oldLink, quality) == "Quality not found"):
+                    return "Quality not found"
+                db.insertHistory(self.userName, anime_name, index)
+                if(self.animepahe(plink, quality) == "Quality not found"):
+                    return "Quality not found"
+                db.insertHistory(self.userName, anime_name, index)
+
+class downloader():
+    def __init__(self):
+        self.anilist = Anilist()
+        
+        
+    def download(self, anime_name, quality):
+        anilist = self.anilist    
+        print("In download")
+        anime_data = anilist.get_anime(anime_name)
+        print(anime_data)
+        if anime_data['airing_status'] == "FINISHED":
+            print("Already aired")
+            try:
+                ad = airedDownloader()
+                ad.airedDownload(anime_name)
+            except:
+                ad = airingDownloader()
+                ad.airingDownload(anime_name, quality)
+        else:
+            print("Airing")
+            ad = airingDownloader()
+            ad.airingDownload(anime_name, quality)    
+            
+    
         
 if __name__ == "__main__":
-    d1 = downloader("Baasil")
+    d1 = downloader()
     #d1.airingDownload("Tokyo Ghoul")
-    print(d1.airingDownload("Tokyo Ghoul", "720p"))
+    d1.download("Tokyo Ghpul", "1080p")
     #print(d1.getDownloadOptions("Tokyo Ghoul"))
         
