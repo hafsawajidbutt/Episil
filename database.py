@@ -33,7 +33,7 @@ class Database():
                 {"type": "execute", "stmt": {"sql": """CREATE TABLE IF NOT EXISTS UserShow (
                     userName TEXT,
                     show TEXT,
-                    PRIMARY KEY(userName, show),
+                    PRIMARY KEY(userName, show)
                 )"""}},
                 {"type" : "execute", "stmt" : {"sql": """CREATE TABLE IF NOT EXISTS UserHistory (
                 userName TEXT,

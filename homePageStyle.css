@@ -37,12 +37,14 @@ body::before {
     height: 100%;
     color: white;
 }
+
 #non-search
 {
     display: flex;
     flex-direction: row;
     gap: 1%;
 }
+
 .navbar {
     top: 0%;
     display: flex;
@@ -76,6 +78,7 @@ body::before {
     display: flex;
     flex-direction: row;
 }
+
 #search-bar {
     width: 80%;
     padding: 10px;
@@ -94,6 +97,7 @@ body::before {
   border-radius: 5px;
   margin-left: 0px;
 }
+
 #search-button img {
   width: 15px;
   height: 15px;
@@ -227,8 +231,4 @@ body::before {
 .hidden
 {
     display: "none";
-}
-#Remove
-{
-    z-index: 4;
 }

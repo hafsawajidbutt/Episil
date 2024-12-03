@@ -10,6 +10,7 @@ document.querySelector("#back").addEventListener('click', function()
 // })
 document.querySelector("#change").addEventListener('click', async function()
 {
+    this.document.getElementById("loader").classList.add("loader")
     console.log("Clicked")
     var newUserName = document.querySelector("#username").value
     var profilePictureLink = document.querySelector("#pfp-link").value
@@ -44,6 +45,7 @@ document.querySelector("#change").addEventListener('click', async function()
         var data2 = await response2.json()
         console.log(data2)
         
+        this.document.getElementById("loader").classList.remove("loader")
         console.log("Done")
         window.location.href = "./homePage.html"
     }
@@ -66,6 +68,7 @@ document.querySelector("#change").addEventListener('click', async function()
         var data3 = await response3.json()
         console.log(data3)
         
+        this.document.getElementById("loader").classList.remove("loader")
         window.location.href = "./homePage.html"
     }
     else if(profilePictureLink != "")
@@ -87,6 +90,7 @@ document.querySelector("#change").addEventListener('click', async function()
         var data3 = await response3.json()
         console.log(data3)
         
+        this.document.getElementById("loader").classList.remove("loader")
         window.location.href = "./homePage.html"
     }
 })
