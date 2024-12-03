@@ -34,15 +34,12 @@ class Database():
                     userName TEXT,
                     show TEXT,
                     PRIMARY KEY(userName, show),
-                    FOREIGN KEY(userName) REFERENCES User(userName)
                 )"""}},
                 {"type" : "execute", "stmt" : {"sql": """CREATE TABLE IF NOT EXISTS UserHistory (
                 userName TEXT,
                 show TEXT,
                 episodeNum INT,
-                PRIMARY KEY(userName, show, episodeNum),
-                FOREIGN KEY(userName, show) REFERENCES UserShow(userName, show),
-                )"""}},
+                PRIMARY KEY(userName, show, episodeNum))"""}},
                 {"type": "close"}
             ]
         }
@@ -120,6 +117,7 @@ class Database():
     
     def insertHistory(self, userName, show, episodeNum):
         userName = bcrypt.hashpw(userName.encode(), self.salt)
+        print(f""" INSERT INTO UserHistory (userName, show, episodeNum) VALUES ("{userName}", "{show}", {episodeNum}) """)
         body = {
             "requests": 
                 [
@@ -400,7 +398,7 @@ class localStorage(DB):
 if __name__ == "__main__":
     #base = localStorage()
     base = Database()
-    base.insertHistory("Baasil", "Orbital Children", 1)
+    #base.insertHistory("Baasil", "Orbital Children", 1)
     #base.insertUser("Pookie", "booter", "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.deviantart.com%2Fayayyuki%2Fart%2FToon-Link-Profile-Pic-commission-781975060&psig=AOvVaw3CbOW8L2HQd_Wnw6A8Du4d&ust=1733256781541000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCKCE9rHgiIoDFQAAAAAdAAAAABAE", "baaasil@gmail.com", "bungums")    
     # base.insertShow("Baasil", "Tokyo Mew Mew")
     # # base.insertShow("Baasil", "Tokyo Ghoul: "Jack"")
