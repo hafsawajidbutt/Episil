@@ -129,7 +129,9 @@ def getDownloadHistory():
     try:
         rows = d1.getUserHistory(userName)
         if(rows == "No episodes have been downloaded for this show"):
-            return rows
+            data = {'message': 'No episodes have been downloaded for this show'}
+            response = flask.make_response(jsonify(data))
+            return response
         animeNames = []
         episodeNums = []
         finalRes = []
