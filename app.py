@@ -21,8 +21,12 @@ def addUser():
     passWord = request.form.get("passWord")
     email = request.form.get("email")    
     profilePictureLink = request.form.get("profilePictureLink")
+    downloadLocation = request.form.get("downloadLocation")
     try:
-        d1.insertUser(userName, passWord, profilePictureLink, email)
+        if(downloadLocation == ""):
+            d1.insertUser(userName, passWord, profilePictureLink, email)
+        else:
+            d1.insertUser(userName, passWord, profilePictureLink, email, downloadLocation)
         data = data = {'message': 'Success'}
         print("About to send response")
         response = flask.make_response(jsonify(data))
@@ -237,6 +241,18 @@ def removeShow():
         return rows
     except Exception as e:
         return e
+
+@app.route('/getUserDownloadDirectory', methods = ["GET"])
+def getUserDownloadDirectory():
+    userName = request.args.get("userName")
+    print("Username: " + userName)
+    d1 = Database()
+    try:
+        rows = d1.getUserDownloadDirectory(userName)
+        return rows["results"][0]["response"]["result"]["rows"][0][0]["value"]
+    except Exception as e:
+        return e
+
           
 @app.route('/logOut', methods = ["POST"])
 def logOut():

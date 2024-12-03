@@ -32,11 +32,24 @@ class downloader:
         self.driver2 = None#uc.Chrome()
         self.qb = None#Client('http://127.0.0.1:8080/')
         self.userName = userName
+        self.customDownload = False
+        d1 = Database()
+        rows = d1.getUserDownloadDirectory(self.userName)
+        download_dir = rows["results"][0]["response"]["result"]["rows"][0][0]["value"]
+        if(download_dir[-9::] == "Downloads"):
+            # Create Chrome options
+            self.customDownload = True
+            self.chrome_options = Options()
+            prefs = {"download.default_directory": download_dir}
+            self.chrome_options.add_experimental_option("prefs", prefs)
         #self.qb.login('admin', 'hafsapotty')
         #self.conn = sqlite3.connect("epnis.db")
     
-    def animepahe(self, link):
-        self.driver = uc.Chrome()
+    def animepahe(self, link, quality):
+        if(self.customDownload == False):
+            self.driver = uc.Chrome()
+        else:
+            self.driver = uc.Chrome(options=self.chrome_options)
         driver = self.driver
         #driver2 = self.driver2
         driver.get(link)
@@ -56,7 +69,12 @@ class downloader:
         downloadLinks = driver.find_elements(By.CLASS_NAME, "dropdown-item")
         winLink = ""
         for link in downloadLinks:
-            winLink = link.get_attribute('href')
+            if(quality in link.text):
+                winLink = link.get_attribute('href')
+            #winLink = link.get_attribute('href')
+        if(winLink == ""):
+            driver.quit()
+            return "Quality not found"
         print("Download button found")
         print(winLink)
         #driver.quit()
@@ -69,7 +87,10 @@ class downloader:
         end_index = script_content.find(')', start_index)
         href_part = script_content[start_index:end_index]
         href_value = href_part[href_part.find('"') + 1: href_part.rfind('"')]  # Extract href within quotes
-        self.driver2 = uc.Chrome()
+        if(self.customDownload == False):
+            self.driver2 = uc.Chrome()
+        else:
+            self.driver2 = uc.Chrome(options=self.chrome_options)
         driver2 = self.driver2
         driver2.get(href_value)
         time.sleep(5)
@@ -99,7 +120,7 @@ class downloader:
         print("While loop exited")
         driver2.quit()
     
-    def findingEpisodes(self, name):
+    def findingEpisodes(self, name, quality):  
         self.driver = uc.Chrome()
         driver = self.driver
         driver.get("https://animepahe.ru/")
@@ -118,6 +139,7 @@ class downloader:
         for playlink in play_links:
             links.append(playlink.get_attribute('href'))
         links.reverse()
+        driver.quit()
         return links
     
     def airedDownload(self, anime_name):
@@ -148,20 +170,25 @@ class downloader:
             print("In exception block")
             print(e.args)
     
-    def airingDownload(self, anime_name):
-        links = self.findingEpisodes(anime_name)
+    def airingDownload(self, anime_name, quality):
+        if(quality != "360p" and quality != "720p" and quality != "1080p"):
+            return "Incorrect Quality"
+        links = self.findingEpisodes(anime_name, quality)
         db = Database()
         for plink in links:
             index = links.index(plink)
             record = db.getEpisodeRecord(self.userName, anime_name, index)
             if(record == 1 and index != 0):    
-                self.animepahe(plink)
+                if(self.animepahe(plink, quality) == "Quality not found"):
+                    return "Quality not found"
                 db.insertHistory(self.userName, anime_name, index + 1)
             else:
                 oldLink = links[links.index(plink) - 1]
-                self.animepahe(oldLink)
+                if(self.animepahe(oldLink, quality) == "Quality not found"):
+                    return "Quality not found"
                 db.insertHistory(self.userName, anime_name, index)
-                self.animepahe(plink)
+                if(self.animepahe(plink, quality) == "Quality not found"):
+                    return "Quality not found"
                 db.insertHistory(self.userName, anime_name, index)
 
     def download(self, anime_name):
@@ -210,6 +237,6 @@ class downloader:
 if __name__ == "__main__":
     d1 = downloader("Baasil")
     #d1.airingDownload("Tokyo Ghoul")
-    d1.download("Tokyo Mew Mew")
+    print(d1.airingDownload("Tokyo Ghoul", "720p"))
     #print(d1.getDownloadOptions("Tokyo Ghoul"))
         

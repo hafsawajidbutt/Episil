@@ -6,6 +6,7 @@ document.getElementById("signUp").addEventListener("click", async function()
     password = document.getElementById("password").value
     cpassword = document.getElementById("Cpassword").value
     profilePhoto = document.getElementById("ProfilePhoto").value
+    downloadLocation = document.getElementById("DownloadLocation").value
     console.log("Values collected")
     if(password.value == cpassword.value)
     {
@@ -14,6 +15,7 @@ document.getElementById("signUp").addEventListener("click", async function()
         formData.append('passWord', password)
         formData.append('email', email)
         formData.append('profilePictureLink', profilePhoto)
+        formData.append('downloadLocation', downloadLocation)
         const request = new Request("http://127.0.0.1:5000/addUser", {
             method: "POST",
             body: formData});
