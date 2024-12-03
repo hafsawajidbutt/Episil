@@ -41,8 +41,8 @@ class Database():
                 show TEXT,
                 episodeNum INT,
                 PRIMARY KEY(userName, show, episodeNum),
-                FOREIGN KEY(userName) REFERENCES User(userName))
-                FOREIGN KEY(show) REFERENCES UserShow(show)"""}},
+                FOREIGN KEY(userName) REFERENCES User(userName),
+                FOREIGN KEY(show) REFERENCES UserShow(show) )"""}},
                 {"type": "close"}
             ]
         }

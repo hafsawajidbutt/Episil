@@ -157,10 +157,12 @@ def getUser():
     userName = ls.extractData()
     if(userName):
         data = {'userName': str(userName)}
+        print(data)
         response = flask.make_response(jsonify(data))
         return response
     else:
         data = {'userName': "No username"}
+        print(data)
         response = flask.make_response(jsonify(data))
         return response
 
