@@ -146,17 +146,17 @@ body::before {
 @media (min-width: 768px) and (max-width: 1024px) {
     .profile-container {
         grid-template-columns: 1fr;
-        width: 80%;
+        width: 60%;
         height: auto;
     }
 
     .edit-profile-form input {
-        width: 80%;
+        width: 60%;
         margin-left: 10%;
     }
 
     .edit-profile-form button {
-        width: 80%;
+        width: 60%;
         margin-left: 10%;
     }
 }
