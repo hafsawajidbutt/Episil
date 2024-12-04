@@ -47,7 +47,7 @@ class airedDownloader():
                 qb.login('admin', 'hafsapotty')
         new_anime_name = "%20".join(anime_name.split())
         try:
-            response = requests.get(f"https://nyaaapi.onrender.com/nyaa?q={new_anime_name}", verify=False)
+            response = requests.get(f"https://nyaaapi.onrender.com/nyaa?q={new_anime_name}", verify=True)
             dic = response.json()
             animeTitle = dic["data"][0]["title"]
             torrentLink = dic["data"][0]["torrent"]
@@ -220,8 +220,7 @@ class airingDownloader():
 class downloader():
     def __init__(self):
         self.anilist = Anilist()
-        
-        
+            
     def download(self, anime_name, quality):
         anilist = self.anilist    
         print("In download")

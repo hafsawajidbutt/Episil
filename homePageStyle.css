@@ -90,7 +90,6 @@ body::before {
 
 #search-button {
   background-color: white;
-  border: none;
   cursor: pointer;
   padding: 10px;
   border: 1px solid #070707;

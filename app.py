@@ -192,12 +192,13 @@ def download():
     print("In download")
     userName = request.form.get("userName")
     show = request.form.get("show")
+    quality = request.form.get("quality")
     print(userName)
     print(show)
     d1 = downloader(userName)
     try:
         print("In try")
-        d1.download(show)
+        d1.download(show, quality)
         data = {'message': "Success"}
         response = flask.make_response(jsonify(data))
         return response
@@ -273,4 +274,4 @@ def logOut():
         return response
         
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
